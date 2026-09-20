@@ -381,3 +381,259 @@ Arrays use `arr.length` (field). Strings use `s.length()` (method).
 - Palindrome: two pointers.
 
 Tomorrow: **Two Pointers**.
+
+
+## Solutions
+
+### Problem 1 — RevStr (E)
+
+```java
+class RevStr {
+    public static void main(String[] args) {
+        System.out.println(new StringBuilder("hello").reverse());
+    }
+}
+```
+
+### Problem 2 — PalStr (E)
+
+```java
+class PalStr {
+    public static void main(String[] args) {
+        String s = "racecar"; int l = 0, r = s.length() - 1;
+        while (l < r && s.charAt(l) == s.charAt(r)) { l++; r--; }
+        System.out.println(l >= r);
+    }
+}
+```
+
+### Problem 3 — Vow (E)
+
+```java
+class Vow {
+    public static void main(String[] args) {
+        String s = "Hello"; int c = 0;
+        for (char ch : s.toCharArray()) if ("aeiouAEIOU".indexOf(ch) >= 0) c++;
+        System.out.println(c);
+    }
+}
+```
+
+### Problem 4 — Case (E)
+
+```java
+class Case {
+    public static void main(String[] args) {
+        System.out.println("Hello World".toUpperCase());
+        System.out.println("Hello World".toLowerCase());
+    }
+}
+```
+
+### Problem 5 — FirstUniq (E)
+
+```java
+class FirstUniq {
+    public static void main(String[] args) {
+        String s = "swiss";
+        java.util.Map<Character,Integer> m = new java.util.LinkedHashMap<>();
+        for (char c : s.toCharArray()) m.merge(c, 1, Integer::sum);
+        char ans = 0;
+        for (var e : m.entrySet()) if (e.getValue() == 1) { ans = e.getKey(); break; }
+        System.out.println(ans);
+    }
+}
+```
+
+### Problem 6 — Anagram (M)
+
+```java
+class Anagram {
+    static boolean isAnagram(String a, String b) {
+        if (a.length() != b.length()) return false;
+        int[] c = new int[26];
+        for (int i = 0; i < a.length(); i++) { c[a.charAt(i)-'a']++; c[b.charAt(i)-'a']--; }
+        for (int x : c) if (x != 0) return false;
+        return true;
+    }
+    public static void main(String[] args) { System.out.println(isAnagram("listen", "silent")); }
+}
+```
+
+### Problem 7 — NoRepeat (M)
+
+```java
+class NoRepeat {
+    public static void main(String[] args) {
+        String s = "abcabcbb";
+        java.util.Map<Character,Integer> last = new java.util.HashMap<>();
+        int lo = 0, best = 0;
+        for (int hi = 0; hi < s.length(); hi++) {
+            char c = s.charAt(hi);
+            if (last.containsKey(c)) lo = Math.max(lo, last.get(c) + 1);
+            last.put(c, hi);
+            best = Math.max(best, hi - lo + 1);
+        }
+        System.out.println(best);
+    }
+}
+```
+
+### Problem 8 — Compress (M)
+
+```java
+class Compress {
+    static String comp(String s) {
+        StringBuilder sb = new StringBuilder();
+        int i = 0;
+        while (i < s.length()) {
+            int j = i;
+            while (j < s.length() && s.charAt(j) == s.charAt(i)) j++;
+            sb.append(s.charAt(i)).append(j - i);
+            i = j;
+        }
+        return sb.toString();
+    }
+    public static void main(String[] args) { System.out.println(comp("aabcccccaaa")); }
+}
+```
+
+### Problem 9 — RevWords (M)
+
+```java
+class RevWords {
+    public static void main(String[] args) {
+        String s = "the quick brown fox";
+        String[] w = s.split(" ");
+        StringBuilder sb = new StringBuilder();
+        for (int i = w.length - 1; i >= 0; i--) sb.append(w[i]).append(i==0?"":" ");
+        System.out.println(sb);
+    }
+}
+```
+
+### Problem 10 — GroupAn (M)
+
+```java
+class GroupAn {
+    public static void main(String[] args) {
+        String[] strs = {"eat","tea","tan","ate","nat","bat"};
+        java.util.Map<String, java.util.List<String>> m = new java.util.HashMap<>();
+        for (String s : strs) {
+            char[] c = s.toCharArray(); java.util.Arrays.sort(c);
+            m.computeIfAbsent(new String(c), k -> new java.util.ArrayList<>()).add(s);
+        }
+        System.out.println(new java.util.ArrayList<>(m.values()));
+    }
+}
+```
+
+### Problem 11 — LPSub (H)
+
+```java
+class LPSub {
+    // Expand-around-centre.
+    static String lps(String s) {
+        int bestLo = 0, bestLen = 0;
+        for (int c = 0; c < s.length(); c++) {
+            for (int odd = 0, even = 0; ; odd = even = 0) {
+                int l = c - odd, r = c + odd + 1;          // odd len
+                while (l>=0 && r<s.length() && s.charAt(l)==s.charAt(r)) { l--; r++; }
+                if (r - l - 1 > bestLen) { bestLen = r - l - 1; bestLo = l + 1; }
+                l = c - even; r = c + even + 1;             // even len
+                while (l>=0 && r<s.length() && s.charAt(l)==s.charAt(r)) { l--; r++; }
+                if (r - l - 1 > bestLen) { bestLen = r - l - 1; bestLo = l + 1; }
+                if (c + (odd > 0 ? 1 : 0) >= s.length()) break;
+            }
+        }
+        return s.substring(bestLo, bestLo + bestLen);
+    }
+    public static void main(String[] args) { System.out.println(lps("babad")); }
+}
+```
+
+### Problem 12 — MinWin (H)
+
+```java
+class MinWin {
+    public static void main(String[] args) {
+        String s = "ADOBECODEBANC", t = "ABC";
+        java.util.Map<Character,Integer> need = new java.util.HashMap<>();
+        for (char c : t.toCharArray()) need.merge(c, 1, Integer::sum);
+        java.util.Map<Character,Integer> have = new java.util.HashMap<>();
+        int lo = 0, formed = 0, best = Integer.MAX_VALUE, bestLo = 0;
+        for (int hi = 0; hi < s.length(); hi++) {
+            char c = s.charAt(hi);
+            have.merge(c, 1, Integer::sum);
+            if (need.containsKey(c) && have.get(c).intValue() == need.get(c).intValue()) formed++;
+            while (formed == need.size()) {
+                if (hi - lo + 1 < best) { best = hi - lo + 1; bestLo = lo; }
+                char cl = s.charAt(lo++);
+                if (need.containsKey(cl) && have.get(cl).intValue() == need.get(cl).intValue()) formed--;
+                have.merge(cl, -1, Integer::sum);
+            }
+        }
+        System.out.println(best == Integer.MAX_VALUE ? "" : s.substring(bestLo, bestLo + best));
+    }
+}
+```
+
+### Problem 13 — EditDist (H)
+
+```java
+class EditDist {
+    public static void main(String[] args) {
+        String a = "horse", b = "ros";
+        int m = a.length(), n = b.length();
+        int[][] dp = new int[m+1][n+1];
+        for (int i = 0; i <= m; i++) dp[i][0] = i;
+        for (int j = 0; j <= n; j++) dp[0][j] = j;
+        for (int i = 1; i <= m; i++)
+            for (int j = 1; j <= n; j++) {
+                if (a.charAt(i-1) == b.charAt(j-1)) dp[i][j] = dp[i-1][j-1];
+                else dp[i][j] = 1 + Math.min(dp[i-1][j-1], Math.min(dp[i-1][j], dp[i][j-1]));
+            }
+        System.out.println(dp[m][n]);
+    }
+}
+```
+
+### Problem 14 — LCP (H)
+
+```java
+class LCP {
+    public static void main(String[] args) {
+        String[] strs = {"flower","flow","flight"};
+        String pref = strs[0];
+        for (int i = 1; i < strs.length; i++)
+            while (!strs[i].startsWith(pref)) pref = pref.substring(0, pref.length()-1);
+        System.out.println(pref);
+    }
+}
+```
+
+### Problem 15 — RK (H)
+
+```java
+class RK {
+    static int search(String text, String pat) {
+        if (pat.length() > text.length()) return -1;
+        long base = 31, mod = 1_000_000_007, pHash = 0, tHash = 0, h = 1;
+        for (int i = 0; i < pat.length() - 1; i++) h = h * base % mod;
+        for (int i = 0; i < pat.length(); i++) {
+            pHash = (pHash * base + pat.charAt(i)) % mod;
+            tHash = (tHash * base + text.charAt(i)) % mod;
+        }
+        for (int i = 0; i <= text.length() - pat.length(); i++) {
+            if (pHash == tHash && text.substring(i, i + pat.length()).equals(pat)) return i;
+            if (i + pat.length() < text.length())
+                tHash = ((tHash - text.charAt(i) * h) * base + text.charAt(i + pat.length())) % mod;
+        }
+        return -1;
+    }
+    public static void main(String[] args) {
+        System.out.println(search("hello world", "world"));
+    }
+}
+```
+

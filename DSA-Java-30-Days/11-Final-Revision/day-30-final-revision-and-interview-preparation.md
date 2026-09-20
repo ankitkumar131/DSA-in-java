@@ -422,3 +422,192 @@ The course is over. The real practice begins now. Good luck — and remember: DS
 - **Mock interviews**: Pramp, interviewing.io
 
 Stay consistent. Trust your preparation. You've earned it.
+
+
+## Solutions
+
+### Problem 1 — TwoSumF (E)
+
+```java
+class TwoSumF {
+    public static void main(String[] args) {
+        int[] a = {2,7,11,15}; int t = 9;
+        java.util.Map<Integer, Integer> m = new java.util.HashMap<>();
+        for (int i = 0; i < a.length; i++) if (m.containsKey(t - a[i])) { System.out.println(m.get(t - a[i]) + " " + i); return; } else m.put(a[i], i);
+    }
+}
+```
+
+### Problem 2 — ParenF (E)
+
+```java
+class ParenF {
+    public static void main(String[] args) {
+        int n = 3;
+        java.util.List<String> res = new java.util.ArrayList<>();
+        gen(n, 0, 0, new StringBuilder(), res);
+        System.out.println(res);
+    }
+    static void gen(int n, int open, int close, StringBuilder cur, java.util.List<String> res) {
+        if (cur.length() == 2 * n) { res.add(cur.toString()); return; }
+        if (open < n) { cur.append('('); gen(n, open + 1, close, cur, res); cur.deleteCharAt(cur.length() - 1); }
+        if (close < open) { cur.append(')'); gen(n, open, close + 1, cur, res); cur.deleteCharAt(cur.length() - 1); }
+    }
+}
+```
+
+### Problem 3 — StockF (E)
+
+```java
+class StockF {
+    public static void main(String[] args) {
+        int[] p = {7,1,5,3,6,4};
+        int min = Integer.MAX_VALUE, best = 0;
+        for (int x : p) { best = Math.max(best, x - min); min = Math.min(min, x); }
+        System.out.println(best);
+    }
+}
+```
+
+### Problem 4 — GroupF (E)
+
+```java
+class GroupF {
+    public static void main(String[] args) {
+        String[] a = {"eat","tea","tan","ate","nat","bat"};
+        java.util.Map<String, java.util.List<String>> m = new java.util.HashMap<>();
+        for (String w : a) { char[] c = w.toCharArray(); java.util.Arrays.sort(c); m.computeIfAbsent(new String(c), k -> new java.util.ArrayList<>()).add(w); }
+        System.out.println(m.values());
+    }
+}
+```
+
+### Problem 5 — CourseF (E)
+
+```java
+class CourseF {
+    public static void main(String[] args) {
+        int n = 2; int[][] p = {{1,0}};
+        java.util.List<java.util.List<Integer>> g = new java.util.ArrayList<>();
+        for (int i = 0; i < n; i++) g.add(new java.util.ArrayList<>());
+        for (int[] x : p) g.get(x[1]).add(x[0]);
+        int[] s = new int[n];
+        for (int i = 0; i < n; i++) if (!dfs(g, s, i)) { System.out.println(false); return; }
+        System.out.println(true);
+    }
+    static boolean dfs(java.util.List<java.util.List<Integer>> g, int[] s, int u) {
+        if (s[u] == 1) return false; if (s[u] == 2) return true;
+        s[u] = 1;
+        for (int v : g.get(u)) if (!dfs(g, s, v)) return false;
+        s[u] = 2; return true;
+    }
+}
+```
+
+### Problem 6 — CoinF (M)
+
+```java
+class CoinF {
+    public static void main(String[] args) {
+        int[] c = {1,2,5}; int a = 11;
+        int[] dp = new int[a + 1]; dp[0] = 1;
+        for (int x : c) for (int i = x; i <= a; i++) dp[i] += dp[i - x];
+        System.out.println(dp[a]);
+    }
+}
+```
+
+### Problem 7 — LRUF (M)
+
+```java
+class LRUF {
+    static class Node { int k, v; Node prev, next; Node(int k, int v) { this.k=k; this.v=v; } }
+    static class LRU {
+        int cap; java.util.Map<Integer, Node> m = new java.util.HashMap<>();
+        Node head = new Node(0,0), tail = new Node(0,0);
+        LRU(int cap) { this.cap = cap; head.next = tail; tail.prev = head; }
+        void add(Node n) { n.prev = head; n.next = head.next; head.next.prev = n; head.next = n; }
+        void remove(Node n) { n.prev.next = n.next; n.next.prev = n.prev; }
+        int get(int k) { if (!m.containsKey(k)) return -1; Node n = m.get(k); remove(n); add(n); return n.v; }
+        void put(int k, int v) {
+            if (m.containsKey(k)) remove(m.get(k));
+            Node n = new Node(k, v); add(n); m.put(k, n);
+            if (m.size() > cap) { Node lru = tail.prev; remove(lru); m.remove(lru.k); }
+        }
+    }
+    public static void main(String[] args) {
+        LRU l = new LRU(2);
+        l.put(1,1); l.put(2,2);
+        System.out.println(l.get(1));
+        l.put(3,3);
+        System.out.println(l.get(2));
+    }
+}
+```
+
+### Problem 8 — LadderF (M)
+
+```java
+class LadderF {
+    public static void main(String[] args) {
+        String begin = "hit", end = "cog";
+        java.util.List<String> wl = java.util.Arrays.asList("hot","dot","dog","lot","log","cog");
+        java.util.Set<String> dict = new java.util.HashSet<>(wl);
+        java.util.Deque<String> q = new java.util.ArrayDeque<>();
+        java.util.Set<String> seen = new java.util.HashSet<>();
+        q.offer(begin); seen.add(begin); int steps = 1;
+        while (!q.isEmpty()) {
+            int sz = q.size();
+            for (int i = 0; i < sz; i++) {
+                String w = q.poll();
+                if (w.equals(end)) { System.out.println(steps); return; }
+                char[] a = w.toCharArray();
+                for (int j = 0; j < a.length; j++) {
+                    char orig = a[j];
+                    for (char c = 'a'; c <= 'z'; c++) { if (c==orig) continue; a[j]=c; String n = new String(a); if (dict.contains(n) && seen.add(n)) q.offer(n); }
+                    a[j] = orig;
+                }
+            }
+            steps++;
+        }
+        System.out.println(0);
+    }
+}
+```
+
+### Problem 9 — TrapF (M)
+
+```java
+class TrapF {
+    public static void main(String[] args) {
+        int[] h = {0,1,0,2,1,0,1,3,2,1,2,1};
+        int n = h.length;
+        if (n == 0) { System.out.println(0); return; }
+        int[] l = new int[n], r = new int[n]; l[0] = h[0]; for (int i = 1; i < n; i++) l[i] = Math.max(l[i-1], h[i]);
+        r[n-1] = h[n-1]; for (int i = n-2; i >= 0; i--) r[i] = Math.max(r[i+1], h[i]);
+        int ans = 0; for (int i = 0; i < n; i++) ans += Math.min(l[i], r[i]) - h[i];
+        System.out.println(ans);
+    }
+}
+```
+
+### Problem 10 — MedF (M)
+
+```java
+class MedF {
+    public static void main(String[] args) {
+        java.util.PriorityQueue<Integer> lo = new java.util.PriorityQueue<>((a,b) -> b - a);
+        java.util.PriorityQueue<Integer> hi = new java.util.PriorityQueue<>();
+        int[] stream = {1,2,3,4,5};
+        java.util.List<Double> res = new java.util.ArrayList<>();
+        for (int x : stream) {
+            lo.offer(x); hi.offer(lo.poll());
+            if (lo.size() < hi.size()) lo.offer(hi.poll());
+            if (lo.size() > hi.size()) res.add((double) lo.peek());
+            else res.add((lo.peek() + hi.peek()) / 2.0);
+        }
+        System.out.println(res);
+    }
+}
+```
+

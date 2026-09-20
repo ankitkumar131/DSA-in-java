@@ -267,3 +267,240 @@ Standard.
 - Always validate with a counter-example.
 
 Tomorrow: **Backtracking**.
+
+
+## Solutions
+
+### Problem 1 — Cookies (E)
+
+```java
+class Cookies {
+    public static void main(String[] args) {
+        int[] g = {1,2,3}; int[] s = {1,1};
+        java.util.Arrays.sort(g); java.util.Arrays.sort(s);
+        int i = 0, j = 0;
+        while (i < g.length && j < s.length) { if (s[j] >= g[i]) { i++; j++; } else j++; }
+        System.out.println(i);
+    }
+}
+```
+
+### Problem 2 — Lemon (E)
+
+```java
+class Lemon {
+    public static void main(String[] args) {
+        int[] b = {5,5,5,10,20};
+        int f = 0, t = 0, tw = 0;
+        for (int x : b) {
+            if (x == 5) f++;
+            else if (x == 10) { f--; t++; }
+            else { if (t > 0) { t--; f--; } else f -= 2; }
+        }
+        System.out.println(f >= 0);
+    }
+}
+```
+
+### Problem 3 — StockII (E)
+
+```java
+class StockII {
+    public static void main(String[] args) {
+        int[] p = {7,1,5,3,6,4}; int profit = 0;
+        for (int i = 1; i < p.length; i++) if (p[i] > p[i-1]) profit += p[i] - p[i-1];
+        System.out.println(profit);
+    }
+}
+```
+
+### Problem 4 — Flowers (E)
+
+```java
+class Flowers {
+    public static void main(String[] args) {
+        int[] fb = {1,0,0,0,1}; int n = 1;
+        int placed = 0;
+        for (int i = 0; i < fb.length; i++) {
+            if (fb[i] == 0) {
+                int prev = i > 0 ? fb[i-1] : 0;
+                int next = i < fb.length - 1 ? fb[i+1] : 0;
+                if (prev == 0 && next == 0) { fb[i] = 1; placed++; if (placed >= n) break; }
+            }
+        }
+        System.out.println(placed >= n);
+    }
+}
+```
+
+### Problem 5 — Majority (E)
+
+```java
+class Majority {
+    public static void main(String[] args) {
+        int[] a = {3,2,3};
+        int cand = 0, cnt = 0;
+        for (int x : a) { if (cnt == 0) cand = x; cnt += x == cand ? 1 : -1; }
+        System.out.println(cand);
+    }
+}
+```
+
+### Problem 6 — Jump (M)
+
+```java
+class Jump {
+    public static void main(String[] args) {
+        int[] a = {2,3,1,1,4};
+        int far = 0, end = 0, jumps = 0;
+        for (int i = 0; i < a.length - 1; i++) {
+            far = Math.max(far, i + a[i]);
+            if (i == end) { jumps++; end = far; }
+        }
+        System.out.println(jumps);
+    }
+}
+```
+
+### Problem 7 — JumpII (M)
+
+```java
+class JumpII {
+    public static void main(String[] args) {
+        int[] a = {2,3,1,1,4};
+        int far = 0, end = 0, jumps = 0;
+        for (int i = 0; i < a.length - 1; i++) {
+            far = Math.max(far, i + a[i]);
+            if (i == end) { jumps++; end = far; }
+        }
+        System.out.println(jumps);
+    }
+}
+```
+
+### Problem 8 — Gas (M)
+
+```java
+class Gas {
+    public static void main(String[] args) {
+        int[] g = {1,2,3,4,5}, c = {3,4,5,1,2};
+        int total = 0, tank = 0, start = 0;
+        for (int i = 0; i < g.length; i++) { total += g[i] - c[i]; tank += g[i] - c[i]; if (tank < 0) { start = i + 1; tank = 0; } }
+        System.out.println(total < 0 ? -1 : start);
+    }
+}
+```
+
+### Problem 9 — Platforms (M)
+
+```java
+class Platforms {
+    public static void main(String[] args) {
+        int[] arr = {900,940,950,1100,1500,1800}, dep = {910,1200,1120,1130,1900,2000};
+        java.util.Arrays.sort(arr); java.util.Arrays.sort(dep);
+        int i = 0, j = 0, need = 0, max = 0;
+        while (i < arr.length && j < dep.length) {
+            if (arr[i] <= dep[j]) { need++; i++; max = Math.max(max, need); }
+            else { need--; j++; }
+        }
+        System.out.println(max);
+    }
+}
+```
+
+### Problem 10 — Partition (M)
+
+```java
+class Partition {
+    public static void main(String[] args) {
+        String s = "ababcbacadefegdehijhklij";
+        int[] last = new int[26];
+        for (int i = 0; i < s.length(); i++) last[s.charAt(i)-'a'] = i;
+        java.util.List<Integer> out = new java.util.ArrayList<>();
+        int end = 0, start = 0;
+        for (int i = 0; i < s.length(); i++) {
+            end = Math.max(end, last[s.charAt(i)-'a']);
+            if (i == end) { out.add(end - start + 1); start = i + 1; }
+        }
+        System.out.println(out);
+    }
+}
+```
+
+### Problem 11 — Candy (H)
+
+```java
+class Candy {
+    public static void main(String[] args) {
+        int[] r = {1,0,2};
+        int n = r.length; int[] c = new int[n];
+        java.util.Arrays.fill(c, 1);
+        for (int i = 1; i < n; i++) if (r[i] > r[i-1]) c[i] = c[i-1] + 1;
+        for (int i = n - 2; i >= 0; i--) if (r[i] > r[i+1] && c[i] <= c[i+1]) c[i] = c[i+1] + 1;
+        int sum = 0; for (int x : c) sum += x;
+        System.out.println(sum);
+    }
+}
+```
+
+### Problem 12 — InsertInt (H)
+
+```java
+class InsertInt {
+    public static void main(String[] args) {
+        int[][] iv = {{1,3},{6,9}}; int[] n = {2,5};
+        java.util.List<int[]> out = new java.util.ArrayList<>();
+        int i = 0;
+        while (i < iv.length && iv[i][1] < n[0]) { out.add(iv[i++]); }
+        while (i < iv.length && iv[i][0] <= n[1]) { n[0] = Math.min(n[0], iv[i][0]); n[1] = Math.max(n[1], iv[i][1]); i++; }
+        out.add(n);
+        while (i < iv.length) out.add(iv[i++]);
+        System.out.println(out);
+    }
+}
+```
+
+### Problem 13 — MergeInt (H)
+
+```java
+class MergeInt {
+    public static void main(String[] args) {
+        int[][] iv = {{1,3},{2,6},{8,10},{15,18}};
+        java.util.Arrays.sort(iv, (a,b) -> Integer.compare(a[0], b[0]));
+        java.util.List<int[]> out = new java.util.ArrayList<>();
+        int[] cur = iv[0]; out.add(cur);
+        for (int[] x : iv) { if (x[0] <= cur[1]) cur[1] = Math.max(cur[1], x[1]); else { cur = x; out.add(cur); } }
+        System.out.println(out);
+    }
+}
+```
+
+### Problem 14 — Arrows (H)
+
+```java
+class Arrows {
+    public static void main(String[] args) {
+        int[][] p = {{10,16},{2,8},{1,6},{7,12}};
+        java.util.Arrays.sort(p, (a,b) -> Integer.compare(a[1], b[1]));
+        int arrows = 0, last = Integer.MIN_VALUE;
+        for (int[] x : p) { if (x[0] > last) { arrows++; last = x[1]; } }
+        System.out.println(arrows);
+    }
+}
+```
+
+### Problem 15 — TaskSched (H)
+
+```java
+class TaskSched {
+    public static void main(String[] args) {
+        char[] t = {'A','A','A','B','B','B'}; int n = 2;
+        int[] c = new int[26]; for (char ch : t) c[ch-'A']++;
+        java.util.Arrays.sort(c);
+        int max = c[25], idle = (max - 1) * n;
+        for (int i = 24; i >= 0; i--) idle -= Math.min(c[i], max - 1);
+        System.out.println(t.length + Math.max(0, idle));
+    }
+}
+```
+

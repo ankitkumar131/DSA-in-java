@@ -545,3 +545,203 @@ To prevent overflow when numbers grow large (e.g. factorials).
 - Modular arithmetic prevents overflow.
 
 Tomorrow: **Arrays** — your first major data structure.
+
+
+## Solutions
+
+### Problem 1 — GCD (E)
+
+```java
+class GCD {
+    static int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
+    public static void main(String[] args) { System.out.println(gcd(12, 18)); }
+}
+```
+
+### Problem 2 — LCM (E)
+
+```java
+class LCM {
+    static int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
+    static int lcm(int a, int b) { return a / gcd(a, b) * b; }
+    public static void main(String[] args) { System.out.println(lcm(4, 6)); }
+}
+```
+
+### Problem 3 — Prime (E)
+
+```java
+class Prime {
+    static boolean isPrime(int n) {
+        if (n < 2) return false;
+        for (int i = 2; (long) i * i <= n; i++) if (n % i == 0) return false;
+        return true;
+    }
+    public static void main(String[] args) { System.out.println(isPrime(29)); }
+}
+```
+
+### Problem 4 — RevInt (E)
+
+```java
+class RevInt {
+    public static void main(String[] args) {
+        int x = 123, r = 0;
+        while (x != 0) { r = r * 10 + x % 10; x /= 10; }
+        System.out.println(r);
+    }
+}
+```
+
+### Problem 5 — SetBits (E)
+
+```java
+class SetBits {
+    public static void main(String[] args) {
+        int n = 11, c = 0;
+        while (n != 0) { c++; n &= (n - 1); }
+        System.out.println(c);
+    }
+}
+```
+
+### Problem 6 — Sieve (M)
+
+```java
+class Sieve {
+    public static void main(String[] args) {
+        int n = 30;
+        boolean[] p = new boolean[n+1];
+        java.util.Arrays.fill(p, true); p[0] = p[1] = false;
+        for (int i = 2; (long)i*i <= n; i++)
+            if (p[i]) for (int j = i*i; j <= n; j += i) p[j] = false;
+        for (int i = 2; i <= n; i++) if (p[i]) System.out.print(i + " ");
+    }
+}
+```
+
+### Problem 7 — FastPow (M)
+
+```java
+class FastPow {
+    static long pow(long b, long e) {
+        long r = 1;
+        while (e > 0) {
+            if ((e & 1) == 1) r *= b;
+            b *= b; e >>= 1;
+        }
+        return r;
+    }
+    public static void main(String[] args) { System.out.println(pow(2, 10)); }
+}
+```
+
+### Problem 8 — PalNum (M)
+
+```java
+class PalNum {
+    public static void main(String[] args) {
+        int n = 121, t = n, r = 0;
+        while (t != 0) { r = r * 10 + t % 10; t /= 10; }
+        System.out.println(r == n);
+    }
+}
+```
+
+### Problem 9 — PowTwo (M)
+
+```java
+class PowTwo {
+    public static void main(String[] args) {
+        int n = 16;
+        System.out.println(n > 0 && (n & (n - 1)) == 0);
+    }
+}
+```
+
+### Problem 10 — DigitSum (M)
+
+```java
+class DigitSum {
+    public static void main(String[] args) {
+        int n = 12345, s = 0;
+        while (n != 0) { s += n % 10; n /= 10; }
+        System.out.println(s);
+    }
+}
+```
+
+### Problem 11 — ModFact (H)
+
+```java
+class ModFact {
+    // Wilson: (p-1)! ≡ -1 (mod p) for prime p.  For non-prime p, gcd(p, k) > 1 for some 1<=k<p.
+    static long modFact(long n, long p) {
+        if (n >= p) return 0;
+        long r = 1;
+        for (long i = 2; i < p; i++) if (i % n == 0) r = (r * (i / n)) % p;
+        return r;
+    }
+    public static void main(String[] args) { System.out.println(modFact(7, 11)); }
+}
+```
+
+### Problem 12 — ModInv (H)
+
+```java
+class ModInv {
+    // Fermat: a^(p-2) mod p  (only for prime p)
+    static long modPow(long a, long e, long m) {
+        long r = 1; a %= m;
+        while (e > 0) {
+            if ((e & 1) == 1) r = r * a % m;
+            a = a * a % m; e >>= 1;
+        }
+        return r;
+    }
+    static long modInv(long a, long p) { return modPow(a, p - 2, p); }
+    public static void main(String[] args) { System.out.println(modInv(3, 7)); } // 5 (since 3*5=15≡1)
+}
+```
+
+### Problem 13 — TotalBits (H)
+
+```java
+class TotalBits {
+    // Total set bits in 1..n using Brian-Kernighan per number: O(n log n) naive.
+    // Better: digit-DP / formula, but we provide the simple version.
+    static int countBits(int n) {
+        int c = 0; for (int i = 1; i <= n; i++) c += java.lang.Integer.bitCount(i);
+        return c;
+    }
+    public static void main(String[] args) { System.out.println(countBits(14)); } // 1+1+2+1+2+2+3+1+2+2+3+2+3+3 = 28
+}
+```
+
+### Problem 14 — Single (H)
+
+```java
+class Single {
+    // Every number appears twice except one — XOR cancels pairs.
+    public static void main(String[] args) {
+        int[] a = {2, 3, 5, 4, 5, 3, 2};
+        int x = 0;
+        for (int v : a) x ^= v;
+        System.out.println(x);   // 4
+    }
+}
+```
+
+### Problem 15 — PowFour (H)
+
+```java
+class PowFour {
+    // Power of 4 = power of 2 AND odd-position bit set.
+    public static void main(String[] args) {
+        int n = 16;
+        boolean isPow4 = n > 0 && (n & (n - 1)) == 0 && (n & 0x55555555) != 0;
+        System.out.println(isPow4);
+    }
+}
+```
+

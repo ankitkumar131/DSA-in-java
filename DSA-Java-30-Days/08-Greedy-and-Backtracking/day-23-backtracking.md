@@ -333,3 +333,327 @@ Standard.
 - Sort inputs when possible for early break.
 
 Tomorrow: **Graph Fundamentals**.
+
+
+## Solutions
+
+### Problem 1 — Subsets (E)
+
+```java
+class Subsets {
+    public static void main(String[] args) {
+        int[] a = {1,2,3};
+        java.util.List<java.util.List<Integer>> res = new java.util.ArrayList<>();
+        bt(a, 0, new java.util.ArrayList<>(), res);
+        System.out.println(res);
+    }
+    static void bt(int[] a, int i, java.util.List<Integer> cur, java.util.List<java.util.List<Integer>> res) {
+        res.add(new java.util.ArrayList<>(cur));
+        for (int k = i; k < a.length; k++) { cur.add(a[k]); bt(a, k + 1, cur, res); cur.remove(cur.size() - 1); }
+    }
+}
+```
+
+### Problem 2 — PowerSet (E)
+
+```java
+class PowerSet {
+    public static void main(String[] args) {
+        int[] a = {1,2,3};
+        java.util.List<java.util.List<Integer>> res = new java.util.ArrayList<>();
+        bt(a, 0, new java.util.ArrayList<>(), res);
+        System.out.println(res.size() + " subsets");
+    }
+    static void bt(int[] a, int i, java.util.List<Integer> cur, java.util.List<java.util.List<Integer>> res) {
+        res.add(new java.util.ArrayList<>(cur));
+        for (int k = i; k < a.length; k++) { cur.add(a[k]); bt(a, k + 1, cur, res); cur.remove(cur.size() - 1); }
+    }
+}
+```
+
+### Problem 3 — LetterCase (E)
+
+```java
+class LetterCase {
+    static void bt(String s, int i, StringBuilder cur) {
+        if (i == s.length()) { System.out.println(cur); return; }
+        char c = s.charAt(i);
+        if (Character.isLetter(c)) {
+            cur.append(Character.toLowerCase(c)); bt(s, i+1, cur); cur.deleteCharAt(cur.length()-1);
+            cur.append(Character.toUpperCase(c)); bt(s, i+1, cur); cur.deleteCharAt(cur.length()-1);
+        } else { cur.append(c); bt(s, i+1, cur); cur.deleteCharAt(cur.length()-1); }
+    }
+    public static void main(String[] args) { bt("a1b2", 0, new StringBuilder()); }
+}
+```
+
+### Problem 4 — GenParen (E)
+
+```java
+class GenParen {
+    static void bt(int open, int close, int n, StringBuilder cur) {
+        if (cur.length() == 2 * n) { System.out.println(cur); return; }
+        if (open < n) { cur.append('('); bt(open + 1, close, n, cur); cur.deleteCharAt(cur.length() - 1); }
+        if (close < open) { cur.append(')'); bt(open, close + 1, n, cur); cur.deleteCharAt(cur.length() - 1); }
+    }
+    public static void main(String[] args) { bt(0, 0, 3, new StringBuilder()); }
+}
+```
+
+### Problem 5 — BinWatch (E)
+
+```java
+class BinWatch {
+    public static void main(String[] args) {
+        int turnedOn = 1;
+        java.util.List<String> out = new java.util.ArrayList<>();
+        for (int h = 0; h < 12; h++) for (int m = 0; m < 60; m++)
+            if (Integer.bitCount(h) + Integer.bitCount(m) == turnedOn) out.add(String.format("%d:%02d", h, m));
+        System.out.println(out);
+    }
+}
+```
+
+### Problem 6 — Perms (M)
+
+```java
+class Perms {
+    public static void main(String[] args) {
+        int[] a = {1,2,3};
+        java.util.List<java.util.List<Integer>> res = new java.util.ArrayList<>();
+        perm(a, new boolean[a.length], new java.util.ArrayList<>(), res);
+        System.out.println(res);
+    }
+    static void perm(int[] a, boolean[] used, java.util.List<Integer> cur, java.util.List<java.util.List<Integer>> res) {
+        if (cur.size() == a.length) { res.add(new java.util.ArrayList<>(cur)); return; }
+        for (int i = 0; i < a.length; i++) {
+            if (used[i]) continue;
+            used[i] = true; cur.add(a[i]);
+            perm(a, used, cur, res);
+            used[i] = false; cur.remove(cur.size() - 1);
+        }
+    }
+}
+```
+
+### Problem 7 — PermsDup (M)
+
+```java
+class PermsDup {
+    public static void main(String[] args) {
+        int[] a = {1,1,2};
+        java.util.Arrays.sort(a);
+        java.util.List<java.util.List<Integer>> res = new java.util.ArrayList<>();
+        bt(a, new boolean[a.length], new java.util.ArrayList<>(), res);
+        System.out.println(res);
+    }
+    static void bt(int[] a, boolean[] used, java.util.List<Integer> cur, java.util.List<java.util.List<Integer>> res) {
+        if (cur.size() == a.length) { res.add(new java.util.ArrayList<>(cur)); return; }
+        for (int i = 0; i < a.length; i++) {
+            if (used[i] || (i > 0 && a[i] == a[i-1] && !used[i-1])) continue;
+            used[i] = true; cur.add(a[i]);
+            bt(a, used, cur, res);
+            used[i] = false; cur.remove(cur.size() - 1);
+        }
+    }
+}
+```
+
+### Problem 8 — CombSum (M)
+
+```java
+class CombSum {
+    public static void main(String[] args) {
+        int[] c = {2,3,6,7}; int t = 7;
+        java.util.List<java.util.List<Integer>> res = new java.util.ArrayList<>();
+        bt(c, 0, t, new java.util.ArrayList<>(), res);
+        System.out.println(res);
+    }
+    static void bt(int[] c, int start, int t, java.util.List<Integer> cur, java.util.List<java.util.List<Integer>> res) {
+        if (t == 0) { res.add(new java.util.ArrayList<>(cur)); return; }
+        for (int i = start; i < c.length; i++) {
+            if (c[i] > t) break;
+            cur.add(c[i]); bt(c, i, t - c[i], cur, res); cur.remove(cur.size() - 1);
+        }
+    }
+}
+```
+
+### Problem 9 — CombSumII (M)
+
+```java
+class CombSumII {
+    public static void main(String[] args) {
+        int[] c = {10,1,2,7,6,1,5}; int t = 8;
+        java.util.Arrays.sort(c);
+        java.util.List<java.util.List<Integer>> res = new java.util.ArrayList<>();
+        bt(c, 0, t, new java.util.ArrayList<>(), res);
+        System.out.println(res);
+    }
+    static void bt(int[] c, int start, int t, java.util.List<Integer> cur, java.util.List<java.util.List<Integer>> res) {
+        if (t == 0) { res.add(new java.util.ArrayList<>(cur)); return; }
+        for (int i = start; i < c.length; i++) {
+            if (c[i] > t) break;
+            if (i > start && c[i] == c[i-1]) continue;
+            cur.add(c[i]); bt(c, i + 1, t - c[i], cur, res); cur.remove(cur.size() - 1);
+        }
+    }
+}
+```
+
+### Problem 10 — WordSearch (M)
+
+```java
+class WordSearch {
+    public static void main(String[] args) {
+        char[][] b = {{'A','B','C','E'},{'S','F','C','S'},{'A','D','E','E'}};
+        String w = "ABCCED";
+        int m = b.length, n = b[0].length;
+        boolean found = false;
+        for (int i = 0; i < m && !found; i++) for (int j = 0; j < n && !found; j++)
+            found = dfs(b, w, 0, i, j, new boolean[m][n]);
+        System.out.println(found);
+    }
+    static boolean dfs(char[][] b, String w, int k, int i, int j, boolean[][] v) {
+        if (k == w.length()) return true;
+        if (i<0||j<0||i>=b.length||j>=b[0].length||v[i][j]||b[i][j]!=w.charAt(k)) return false;
+        v[i][j] = true;
+        boolean ok = dfs(b,w,k+1,i+1,j,v)||dfs(b,w,k+1,i-1,j,v)||dfs(b,w,k+1,i,j+1,v)||dfs(b,w,k+1,i,j-1,v);
+        v[i][j] = false;
+        return ok;
+    }
+}
+```
+
+### Problem 11 — NQueens (H)
+
+```java
+class NQueens {
+    public static void main(String[] args) {
+        int n = 4;
+        java.util.List<java.util.List<String>> res = new java.util.ArrayList<>();
+        char[][] b = new char[n][n];
+        for (char[] r : b) java.util.Arrays.fill(r, '.');
+        solve(b, 0, new boolean[n], new boolean[2*n], new boolean[2*n], res);
+        System.out.println(res.size() + " solutions");
+    }
+    static void solve(char[][] b, int row, boolean[] col, boolean[] d1, boolean[] d2, java.util.List<java.util.List<String>> res) {
+        if (row == b.length) {
+            java.util.List<String> s = new java.util.ArrayList<>();
+            for (char[] r : b) s.add(new String(r));
+            res.add(s); return;
+        }
+        for (int j = 0; j < b.length; j++) {
+            if (col[j] || d1[row+j] || d2[row-j+b.length]) continue;
+            b[row][j] = 'Q'; col[j] = d1[row+j] = d2[row-j+b.length] = true;
+            solve(b, row+1, col, d1, d2, res);
+            b[row][j] = '.'; col[j] = d1[row+j] = d2[row-j+b.length] = false;
+        }
+    }
+}
+```
+
+### Problem 12 — Sudoku (H)
+
+```java
+class Sudoku {
+    public static void main(String[] args) {
+        char[][] b = {
+            {'5','3','.','.','7','.','.','.','.'},
+            {'6','.','.','1','9','5','.','.','.'},
+            {'.','9','8','.','.','.','.','6','.'},
+            {'8','.','.','.','6','.','.','.','3'},
+            {'4','.','.','8','.','3','.','.','1'},
+            {'7','.','.','.','2','.','.','.','6'},
+            {'.','6','.','.','.','.','2','8','.'},
+            {'.','.','.','4','1','9','.','.','5'},
+            {'.','.','.','.','8','.','.','7','9'}};
+        solve(b);
+        for (char[] r : b) System.out.println(new String(r));
+    }
+    static boolean solve(char[][] b) {
+        for (int i = 0; i < 9; i++) for (int j = 0; j < 9; j++) if (b[i][j] == '.') {
+            for (char c = '1'; c <= '9'; c++) if (ok(b, i, j, c)) {
+                b[i][j] = c;
+                if (solve(b)) return true;
+                b[i][j] = '.';
+            }
+            return false;
+        }
+        return true;
+    }
+    static boolean ok(char[][] b, int i, int j, char c) {
+        for (int k = 0; k < 9; k++) if (b[i][k] == c || b[k][j] == c) return false;
+        int bi = (i/3)*3, bj = (j/3)*3;
+        for (int x = bi; x < bi+3; x++) for (int y = bj; y < bj+3; y++) if (b[x][y] == c) return false;
+        return true;
+    }
+}
+```
+
+### Problem 13 — RatMaze (H)
+
+```java
+class RatMaze {
+    public static void main(String[] args) {
+        int[][] m = {{1,0,0,0},{1,1,0,1},{0,1,0,0},{1,1,1,1}};
+        int n = m.length;
+        java.util.List<String> res = new java.util.ArrayList<>();
+        dfs(m, n, 0, 0, "", res);
+        System.out.println(res);
+    }
+    static void dfs(int[][] m, int n, int i, int j, String path, java.util.List<String> res) {
+        if (i == n - 1 && j == n - 1) { res.add(path); return; }
+        if (i < 0 || j < 0 || i >= n || j >= n || m[i][j] == 0) return;
+        m[i][j] = 0;
+        dfs(m, n, i+1, j, path+"D", res); dfs(m, n, i-1, j, path+"U", res);
+        dfs(m, n, i, j+1, path+"R", res); dfs(m, n, i, j-1, path+"L", res);
+        m[i][j] = 1;
+    }
+}
+```
+
+### Problem 14 — Regex (H)
+
+```java
+class Regex {
+    public static void main(String[] args) {
+        String s = "ab", p = ".*";
+        System.out.println(match(s, p));
+    }
+    static boolean match(String s, String p) {
+        if (p.isEmpty()) return s.isEmpty();
+        boolean first = !s.isEmpty() && (p.charAt(0) == s.charAt(0) || p.charAt(0) == '.');
+        if (p.length() >= 2 && p.charAt(1) == '*') return match(s, p.substring(2)) || (first && match(s.substring(1), p));
+        return first && match(s.substring(1), p.substring(1));
+    }
+}
+```
+
+### Problem 15 — PalPartition (H)
+
+```java
+class PalPartition {
+    public static void main(String[] args) {
+        String s = "aab";
+        java.util.List<java.util.List<String>> res = new java.util.ArrayList<>();
+        bt(s, 0, new java.util.ArrayList<>(), res);
+        System.out.println(res);
+    }
+    static void bt(String s, int start, java.util.List<String> cur, java.util.List<java.util.List<String>> res) {
+        if (start == s.length()) { res.add(new java.util.ArrayList<>(cur)); return; }
+        for (int end = start; end < s.length(); end++) {
+            if (isPal(s, start, end)) {
+                cur.add(s.substring(start, end + 1));
+                bt(s, end + 1, cur, res);
+                cur.remove(cur.size() - 1);
+            }
+        }
+    }
+    static boolean isPal(String s, int l, int r) {
+        while (l < r) if (s.charAt(l++) != s.charAt(r--)) return false;
+        return true;
+    }
+}
+```
+

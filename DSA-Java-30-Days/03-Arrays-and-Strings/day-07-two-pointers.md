@@ -295,3 +295,264 @@ Yes — each pointer moves at most n times.
 - Container-with-water: move the smaller side.
 
 Tomorrow: **Sliding Window**.
+
+
+## Solutions
+
+### Problem 1 — TwoSumSorted (E)
+
+```java
+class TwoSumSorted {
+    public static void main(String[] args) {
+        int[] a = {2, 7, 11, 15}; int t = 9;
+        int l = 0, r = a.length - 1;
+        while (l < r) {
+            int s = a[l] + a[r];
+            if (s == t) { System.out.println(l + " " + r); return; }
+            if (s < t) l++; else r--;
+        }
+    }
+}
+```
+
+### Problem 2 — Dedup (E)
+
+```java
+class Dedup {
+    public static void main(String[] args) {
+        int[] a = {1,1,2,2,3,3,3,4};
+        int j = 0;
+        for (int i = 1; i < a.length; i++) if (a[i] != a[j]) a[++j] = a[i];
+        System.out.println(j + 1);
+    }
+}
+```
+
+### Problem 3 — Palindrome (E)
+
+```java
+class Palindrome {
+    public static void main(String[] args) {
+        String s = "A man, a plan, a canal: Panama";
+        int l = 0, r = s.length() - 1;
+        while (l < r) {
+            while (l < r && !Character.isLetterOrDigit(s.charAt(l))) l++;
+            while (l < r && !Character.isLetterOrDigit(s.charAt(r))) r--;
+            if (Character.toLowerCase(s.charAt(l)) != Character.toLowerCase(s.charAt(r))) { System.out.println(false); return; }
+            l++; r--;
+        }
+        System.out.println(true);
+    }
+}
+```
+
+### Problem 4 — Move0 (E)
+
+```java
+class Move0 {
+    public static void main(String[] args) {
+        int[] a = {0,1,0,3,12}; int j = 0;
+        for (int x : a) if (x != 0) a[j++] = x;
+        while (j < a.length) a[j++] = 0;
+        System.out.println(java.util.Arrays.toString(a));
+    }
+}
+```
+
+### Problem 5 — RevInPlace (E)
+
+```java
+class RevInPlace {
+    public static void main(String[] args) {
+        char[] a = "hello".toCharArray();
+        int l = 0, r = a.length - 1;
+        while (l < r) { char t = a[l]; a[l++] = a[r]; a[r--] = t; }
+        System.out.println(new String(a));
+    }
+}
+```
+
+### Problem 6 — ThreeSum (M)
+
+```java
+class ThreeSum {
+    public static void main(String[] args) {
+        int[] a = {-1,0,1,2,-1,-4};
+        java.util.Arrays.sort(a);
+        java.util.List<java.util.List<Integer>> res = new java.util.ArrayList<>();
+        for (int i = 0; i < a.length - 2; i++) {
+            if (i > 0 && a[i] == a[i-1]) continue;
+            int l = i + 1, r = a.length - 1, t = -a[i];
+            while (l < r) {
+                int s = a[l] + a[r];
+                if (s == t) {
+                    res.add(java.util.Arrays.asList(a[i], a[l], a[r]));
+                    while (l < r && a[l] == a[l+1]) l++;
+                    while (l < r && a[r] == a[r-1]) r--;
+                    l++; r--;
+                } else if (s < t) l++; else r--;
+            }
+        }
+        System.out.println(res);
+    }
+}
+```
+
+### Problem 7 — Container (M)
+
+```java
+class Container {
+    public static void main(String[] args) {
+        int[] h = {1,8,6,2,5,4,8,3,7};
+        int l = 0, r = h.length - 1, best = 0;
+        while (l < r) {
+            best = Math.max(best, (r - l) * Math.min(h[l], h[r]));
+            if (h[l] < h[r]) l++; else r--;
+        }
+        System.out.println(best);
+    }
+}
+```
+
+### Problem 8 — Dutch (M)
+
+```java
+class Dutch {
+    public static void main(String[] args) {
+        int[] a = {2,0,2,1,1,0};
+        int lo = 0, mid = 0, hi = a.length - 1;
+        while (mid <= hi) {
+            if (a[mid] == 0) { int t = a[lo]; a[lo++] = a[mid]; a[mid++] = t; }
+            else if (a[mid] == 1) mid++;
+            else { int t = a[mid]; a[mid] = a[hi]; a[hi--] = t; }
+        }
+        System.out.println(java.util.Arrays.toString(a));
+    }
+}
+```
+
+### Problem 9 — RemoveEl (M)
+
+```java
+class RemoveEl {
+    public static void main(String[] args) {
+        int[] a = {3,2,2,3}; int v = 3, j = 0;
+        for (int x : a) if (x != v) a[j++] = x;
+        System.out.println(j);
+    }
+}
+```
+
+### Problem 10 — Squares (M)
+
+```java
+class Squares {
+    public static void main(String[] args) {
+        int[] a = {-4,-1,0,3,10};
+        int[] out = new int[a.length];
+        int l = 0, r = a.length - 1, k = a.length - 1;
+        while (l <= r) {
+            int ls = a[l]*a[l], rs = a[r]*a[r];
+            if (ls > rs) { out[k--] = ls; l++; } else { out[k--] = rs; r--; }
+        }
+        System.out.println(java.util.Arrays.toString(out));
+    }
+}
+```
+
+### Problem 11 — TrapTP (H)
+
+```java
+class TrapTP {
+    public static void main(String[] args) {
+        int[] h = {0,1,0,2,1,0,1,3,2,1,2,1};
+        int l = 0, r = h.length-1, lM=0, rM=0, w=0;
+        while (l < r) {
+            if (h[l] < h[r]) { lM = Math.max(lM, h[l]); w += lM - h[l++]; }
+            else { rM = Math.max(rM, h[r]); w += rM - h[r--]; }
+        }
+        System.out.println(w);
+    }
+}
+```
+
+### Problem 12 — FourSum (H)
+
+```java
+class FourSum {
+    public static void main(String[] args) {
+        int[] a = {1,0,-1,0,-2,2};
+        int t = 0;
+        java.util.Arrays.sort(a);
+        java.util.List<java.util.List<Integer>> res = new java.util.ArrayList<>();
+        for (int i = 0; i < a.length - 3; i++) {
+            if (i > 0 && a[i] == a[i-1]) continue;
+            for (int j = i + 1; j < a.length - 2; j++) {
+                if (j > i + 1 && a[j] == a[j-1]) continue;
+                int l = j + 1, r = a.length - 1;
+                while (l < r) {
+                    long s = (long)a[i] + a[j] + a[l] + a[r];
+                    if (s == t) { res.add(java.util.Arrays.asList(a[i], a[j], a[l++], a[r--])); }
+                    else if (s < t) l++; else r--;
+                }
+            }
+        }
+        System.out.println(res);
+    }
+}
+```
+
+### Problem 13 — MinSubSum (H)
+
+```java
+class MinSubSum {
+    public static void main(String[] args) {
+        int[] a = {2,3,1,2,4,3}; int t = 7, l = 0, sum = 0, best = Integer.MAX_VALUE;
+        for (int r = 0; r < a.length; r++) {
+            sum += a[r];
+            while (sum >= t) { best = Math.min(best, r - l + 1); sum -= a[l++]; }
+        }
+        System.out.println(best);
+    }
+}
+```
+
+### Problem 14 — Mountain (H)
+
+```java
+class Mountain {
+    public static void main(String[] args) {
+        int[] a = {2,1,4,7,3,2,5};
+        int n = a.length, best = 0;
+        for (int i = 1; i < n - 1; i++) {
+            if (a[i] > a[i-1] && a[i] > a[i+1]) {
+                int l = i, r = i;
+                while (l > 0 && a[l-1] < a[l]) l--;
+                while (r < n-1 && a[r] > a[r+1]) r++;
+                best = Math.max(best, r - l + 1);
+            }
+        }
+        System.out.println(best);
+    }
+}
+```
+
+### Problem 15 — Partition (H)
+
+```java
+class Partition {
+    public static void main(String[] args) {
+        String s = "ababcbacadefegdehijhklij";
+        int[] last = new int[26];
+        for (int i = 0; i < s.length(); i++) last[s.charAt(i)-'a'] = i;
+        java.util.List<Integer> out = new java.util.ArrayList<>();
+        int end = 0, start = 0;
+        for (int i = 0; i < s.length(); i++) {
+            end = Math.max(end, last[s.charAt(i)-'a']);
+            if (i == end) { out.add(end - start + 1); start = i + 1; }
+        }
+        System.out.println(out);
+    }
+}
+```
+

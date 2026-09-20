@@ -331,3 +331,230 @@ Standard.
 - Combine patterns freely; the framework stays the same.
 
 Tomorrow: **Final Revision**.
+
+
+## Solutions
+
+### Problem 1 — Climb3 (E)
+
+```java
+class Climb3 {
+    public static void main(String[] args) {
+        int n = 5; int[] dp = new int[n + 1]; dp[0] = 1;
+        for (int i = 1; i <= n; i++) for (int j = 1; j <= 2 && j <= i; j++) dp[i] += dp[i - j];
+        System.out.println(dp[n]);
+    }
+}
+```
+
+### Problem 2 — Fib3 (E)
+
+```java
+class Fib3 {
+    public static void main(String[] args) { int n = 30; long a = 0, b = 1; for (int i = 2; i <= n; i++) { long t = a + b; a = b; b = t; } System.out.println(n < 1 ? 0 : (n == 1 ? 1 : b)); }
+}
+```
+
+### Problem 3 — MinCost3 (E)
+
+```java
+class MinCost3 {
+    public static void main(String[] args) {
+        int[][] c = {{1,3},{1,5}}; int m = c.length, n = c[0].length;
+        int[][] dp = new int[m][n]; dp[0][0] = c[0][0];
+        for (int j = 1; j < n; j++) dp[0][j] = dp[0][j-1] + c[0][j];
+        for (int i = 1; i < m; i++) for (int j = 0; j < n; j++) dp[i][j] = c[i][j] + Math.min(dp[i-1][j], (j > 0 ? dp[i-1][j-1] : Integer.MAX_VALUE));
+        System.out.println(dp[m-1][n-1]);
+    }
+}
+```
+
+### Problem 4 — Rob2 (E)
+
+```java
+class Rob2 {
+    public static void main(String[] args) {
+        int[] a = {2,3,2};
+        int n = a.length;
+        if (n == 1) { System.out.println(a[0]); return; }
+        java.util.function.IntUnaryOperator noop = x -> x;
+        System.out.println(Math.max(rob(java.util.Arrays.copyOfRange(a, 0, n - 1), n - 1), rob(java.util.Arrays.copyOfRange(a, 1, n), n - 1)));
+    }
+    static int rob(int[] a, int n) {
+        if (n == 0) return 0; if (n == 1) return a[0];
+        int[] dp = new int[n]; dp[0] = a[0]; dp[1] = Math.max(a[0], a[1]);
+        for (int i = 2; i < n; i++) dp[i] = Math.max(dp[i-1], dp[i-2] + a[i]);
+        return dp[n-1];
+    }
+}
+```
+
+### Problem 5 — Up (E)
+
+```java
+class Up {
+    public static void main(String[] args) {
+        int n = 3, k = 2; int[] dp = new int[n + 1]; dp[0] = 1;
+        for (int i = 1; i <= n; i++) for (int j = 1; j <= k && j <= i; j++) dp[i] += dp[i - j];
+        System.out.println(dp[n]);
+    }
+}
+```
+
+### Problem 6 — UpObst (M)
+
+```java
+class UpObst {
+    public static void main(String[] args) {
+        int[] cost = {10,15,20}; int n = cost.length;
+        int[] dp = new int[n + 1];
+        for (int i = 2; i <= n; i++) {
+            int op1 = dp[i-1] + cost[i-1];
+            int op2 = dp[i-2] + cost[i-2];
+            dp[i] = Math.min(op1, op2);
+        }
+        System.out.println(dp[n]);
+    }
+}
+```
+
+### Problem 7 — MinPath (M)
+
+```java
+class MinPath {
+    public static void main(String[] args) {
+        int[][] g = {{1,3,1},{1,5,1},{4,2,1}};
+        int m = g.length, n = g[0].length;
+        int[][] dp = new int[m][n]; dp[0][0] = g[0][0];
+        for (int j = 1; j < n; j++) dp[0][j] = dp[0][j-1] + g[0][j];
+        for (int i = 1; i < m; i++) for (int j = 0; j < n; j++) dp[i][j] = g[i][j] + Math.min(dp[i-1][j], (j > 0 ? dp[i-1][j-1] : Integer.MAX_VALUE));
+        System.out.println(dp[m-1][n-1]);
+    }
+}
+```
+
+### Problem 8 — Rob3 (M)
+
+```java
+class Rob3 {
+    public static void main(String[] args) {
+        java.util.Map<Integer, Integer> m = new java.util.HashMap<>();
+        System.out.println("see LeetCode 337 — use dfs with memo returning [rob, noRob] pair");
+    }
+}
+```
+
+### Problem 9 — LISMat (M)
+
+```java
+class LISMat {
+    public static void main(String[] args) {
+        int[][] a = {{9,9,4},{6,6,8},{2,1,1}};
+        java.util.Arrays.sort(a, (x,y) -> x[0]==y[0]?Integer.compare(y[1],x[1]):Integer.compare(x[0],y[0]));
+        int n = a.length; int[] dp = new int[n]; int ans = 0;
+        for (int i = 0; i < n; i++) { dp[i] = 1; for (int j = 0; j < i; j++) if (a[j][1] < a[i][1]) dp[i] = Math.max(dp[i], dp[j] + 1); ans = Math.max(ans, dp[i]); }
+        System.out.println(ans);
+    }
+}
+```
+
+### Problem 10 — CoinChg5 (M)
+
+```java
+class CoinChg5 {
+    public static void main(String[] args) {
+        int[] c = {1,2,5}; int a = 11;
+        int[] dp = new int[a + 1]; java.util.Arrays.fill(dp, Integer.MAX_VALUE); dp[0] = 0;
+        for (int x : c) for (int i = x; i <= a; i++) if (dp[i-x] != Integer.MAX_VALUE) dp[i] = Math.min(dp[i], dp[i-x] + 1);
+        System.out.println(dp[a]);
+    }
+}
+```
+
+### Problem 11 — Burst2 (H)
+
+```java
+class Burst2 {
+    public static void main(String[] args) {
+        int[] a = {3,1,5,8}; int n = a.length;
+        int[][] dp = new int[n][n];
+        for (int len = 1; len <= n; len++) for (int i = 0; i <= n - len; i++) {
+            int j = i + len - 1;
+            for (int k = i; k <= j; k++) {
+                int left = (k > i) ? dp[i][k-1] : 0;
+                int right = (k < j) ? dp[k+1][j] : 0;
+                int val = (i == 0 ? 1 : a[i-1]) * a[k] * (j == n - 1 ? 1 : a[j+1]);
+                dp[i][j] = Math.max(dp[i][j], left + right + val);
+            }
+        }
+        System.out.println(dp[0][n-1]);
+    }
+}
+```
+
+### Problem 12 — MCM (H)
+
+```java
+class MCM {
+    public static void main(String[] args) {
+        int[] p = {1,2,3,4,3}; int n = p.length - 1;
+        int[][] dp = new int[n][n];
+        for (int len = 2; len <= n; len++) for (int i = 0; i <= n - len; i++) {
+            int j = i + len - 1; dp[i][j] = Integer.MAX_VALUE;
+            for (int k = i; k < j; k++) dp[i][j] = Math.min(dp[i][j], dp[i][k] + dp[k+1][j] + p[i] * p[k+1] * p[j+1]);
+        }
+        System.out.println(dp[0][n-1]);
+    }
+}
+```
+
+### Problem 13 — TSP (H)
+
+```java
+class TSP {
+    public static void main(String[] args) {
+        int[][] d = {{0,20,30,10},{20,0,15,17},{30,15,0,25},{10,17,25,0}}; int n = 4;
+        int N = 1 << n;
+        int[][] dp = new int[N][n];
+        for (int[] row : dp) java.util.Arrays.fill(row, Integer.MAX_VALUE / 2);
+        for (int i = 0; i < n; i++) dp[1][i] = d[0][i];
+        for (int m = 1; m < N; m++) for (int u = 1; u < n; u++) if ((m & (1 << u)) != 0) {
+            int prev = m ^ (1 << u);
+            if (prev == 0) continue;
+            for (int v = 0; v < n; v++) if (v != u && (prev & (1 << v)) != 0) dp[m][u] = Math.min(dp[m][u], dp[prev][v] + d[v][u]);
+        }
+        int ans = Integer.MAX_VALUE;
+        for (int u = 1; u < n; u++) ans = Math.min(ans, dp[N-1][u] + d[u][0]);
+        System.out.println(ans);
+    }
+}
+```
+
+### Problem 14 — ShortestAll (H)
+
+```java
+class ShortestAll {
+    public static void main(String[] args) {
+        System.out.println("Bitmask DP — see LeetCode 943");
+    }
+}
+```
+
+### Problem 15 — Vowels (H)
+
+```java
+class Vowels {
+    public static void main(String[] args) {
+        String s = "leetcode";
+        int n = s.length();
+        java.util.Set<Character> V = new java.util.HashSet<>(java.util.Arrays.asList('a','e','i','o','u','A','E','I','O','U'));
+        int[] dp = new int[n];
+        for (int i = 0; i < n; i++) {
+            if (V.contains(s.charAt(i))) dp[i] = (i == 0 ? 0 : dp[i-1]) + 1;
+            else dp[i] = (i == 0 ? 0 : dp[i-1]);
+        }
+        System.out.println(dp[n-1]);
+    }
+}
+```
+

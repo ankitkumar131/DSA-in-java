@@ -361,3 +361,281 @@ Pick the side that's definitely sorted; be careful with boundaries.
 - "Binary search on answer" works for any monotonic feasibility check.
 
 Tomorrow: **Sorting** — bubble to merge to quick to counting.
+
+
+## Solutions
+
+### Problem 1 — BS (E)
+
+```java
+class BS {
+    static int search(int[] a, int t) {
+        int l = 0, r = a.length - 1;
+        while (l <= r) {
+            int m = l + (r - l) / 2;
+            if (a[m] == t) return m;
+            if (a[m] < t) l = m + 1; else r = m - 1;
+        }
+        return -1;
+    }
+    public static void main(String[] args) { System.out.println(search(new int[]{1,3,5,7,9}, 5)); }
+}
+```
+
+### Problem 2 — Insert (E)
+
+```java
+class Insert {
+    static int pos(int[] a, int t) {
+        int l = 0, r = a.length;  // hi = n for insertion
+        while (l < r) {
+            int m = l + (r - l) / 2;
+            if (a[m] < t) l = m + 1; else r = m;
+        }
+        return l;
+    }
+    public static void main(String[] args) { System.out.println(pos(new int[]{1,3,5,6}, 2)); }
+}
+```
+
+### Problem 3 — FirstBad (E)
+
+```java
+class FirstBad {
+    static int firstBad(int n) {
+        int l = 1, r = n, ans = n;
+        while (l <= r) {
+            int m = l + (r - l) / 2;
+            // pretend isBad(m)
+            if (m >= 4) { ans = m; r = m - 1; } else l = m + 1;
+        }
+        return ans;
+    }
+    public static void main(String[] args) { System.out.println(firstBad(10)); }
+}
+```
+
+### Problem 4 — PerfectSq (E)
+
+```java
+class PerfectSq {
+    static boolean isSquare(int n) {
+        long l = 1, r = n;
+        while (l <= r) {
+            long m = l + (r - l) / 2, sq = m * m;
+            if (sq == n) return true;
+            if (sq < n) l = m + 1; else r = m - 1;
+        }
+        return false;
+    }
+    public static void main(String[] args) { System.out.println(isSquare(16)); }
+}
+```
+
+### Problem 5 — NextLetter (E)
+
+```java
+class NextLetter {
+    static char next(char[] a, char t) {
+        int l = 0, r = a.length; // wrap-around; return a[0] if past last
+        while (l < r) {
+            int m = l + (r - l) / 2;
+            if (a[m] <= t) l = m + 1; else r = m;
+        }
+        return a[l % a.length];
+    }
+    public static void main(String[] args) { System.out.println(next(new char[]{'c','f','j'}, 'g')); }
+}
+```
+
+### Problem 6 — FirstLast (M)
+
+```java
+class FirstLast {
+    static int[] fl(int[] a, int t) {
+        int[] res = {-1, -1};
+        int l = 0, r = a.length - 1;
+        while (l <= r) {
+            int m = l + (r - l) / 2;
+            if (a[m] >= t) r = m - 1;
+            else l = m + 1;
+            if (a[m] == t) res[0] = m;
+        }
+        l = 0; r = a.length - 1;
+        while (l <= r) {
+            int m = l + (r - l) / 2;
+            if (a[m] <= t) l = m + 1;
+            else r = m - 1;
+            if (a[m] == t) res[1] = m;
+        }
+        return res;
+    }
+    public static void main(String[] args) { System.out.println(java.util.Arrays.toString(fl(new int[]{5,7,7,8,8,10}, 8))); }
+}
+```
+
+### Problem 7 — Rotated (M)
+
+```java
+class Rotated {
+    static int search(int[] a, int t) {
+        int l = 0, r = a.length - 1;
+        while (l <= r) {
+            int m = l + (r - l) / 2;
+            if (a[m] == t) return m;
+            if (a[l] <= a[m]) {
+                if (a[l] <= t && t < a[m]) r = m - 1; else l = m + 1;
+            } else {
+                if (a[m] < t && t <= a[r]) l = m + 1; else r = m - 1;
+            }
+        }
+        return -1;
+    }
+    public static void main(String[] args) { System.out.println(search(new int[]{4,5,6,7,0,1,2}, 0)); }
+}
+```
+
+### Problem 8 — MinRot (M)
+
+```java
+class MinRot {
+    static int min(int[] a) {
+        int l = 0, r = a.length - 1;
+        while (l < r) {
+            int m = l + (r - l) / 2;
+            if (a[m] > a[r]) l = m + 1; else r = m;
+        }
+        return a[l];
+    }
+    public static void main(String[] args) { System.out.println(min(new int[]{3,4,5,1,2})); }
+}
+```
+
+### Problem 9 — Peak (M)
+
+```java
+class Peak {
+    static int peak(int[] a) {
+        int l = 0, r = a.length - 1;
+        while (l < r) {
+            int m = l + (r - l) / 2;
+            if (a[m] > a[m+1]) r = m; else l = m + 1;
+        }
+        return l;
+    }
+    public static void main(String[] args) { System.out.println(peak(new int[]{1,2,3,1})); }
+}
+```
+
+### Problem 10 — Single (M)
+
+```java
+class Single {
+    static int single(int[] a) {
+        int l = 0, r = a.length - 1;
+        while (l < r) {
+            int m = l + (r - l) / 2;
+            if (m % 2 == 1) m--; // make m even
+            if (a[m] == a[m+1]) l = m + 2; else r = m;
+        }
+        return a[l];
+    }
+    public static void main(String[] args) { System.out.println(single(new int[]{1,1,2,3,3,4,4,8,8})); }
+}
+```
+
+### Problem 11 — RotatedDup (H)
+
+```java
+class RotatedDup {
+    static boolean search(int[] a, int t) {
+        int l = 0, r = a.length - 1;
+        while (l <= r) {
+            int m = l + (r - l) / 2;
+            if (a[m] == t) return true;
+            if (a[l] == a[m] && a[m] == a[r]) { l++; r--; }
+            else if (a[l] <= a[m]) {
+                if (a[l] <= t && t < a[m]) r = m - 1; else l = m + 1;
+            } else {
+                if (a[m] < t && t <= a[r]) l = m + 1; else r = m - 1;
+            }
+        }
+        return false;
+    }
+    public static void main(String[] args) { System.out.println(search(new int[]{2,5,6,0,0,1,2}, 0)); }
+}
+```
+
+### Problem 12 — Median2 (H)
+
+```java
+class Median2 {
+    static double median(int[] a, int[] b) {
+        int[] merged = new int[a.length + b.length];
+        int i = 0, j = 0, k = 0;
+        while (i < a.length && j < b.length) merged[k++] = a[i] <= b[j] ? a[i++] : b[j++];
+        while (i < a.length) merged[k++] = a[i++];
+        while (j < b.length) merged[k++] = b[j++];
+        int m = merged.length;
+        return (merged[(m-1)/2] + merged[m/2]) / 2.0;
+    }
+    public static void main(String[] args) { System.out.println(median(new int[]{1,3}, new int[]{2})); }
+}
+```
+
+### Problem 13 — MinSpeed (H)
+
+```java
+class MinSpeed {
+    static int minSpeed(int[] d, int h) {
+        int l = 1, r = 1_000_000_00, ans = -1;
+        while (l <= r) {
+            int m = l + (r - l) / 2;
+            long t = 0;
+            for (int i = 0; i < d.length - 1; i++) t += ((d[i] + m - 1) / m);
+            t += d[d.length - 1]; // last leg no rounding
+            if (t <= h) { ans = m; r = m - 1; } else l = m + 1;
+        }
+        return ans;
+    }
+    public static void main(String[] args) { System.out.println(minSpeed(new int[]{1,3,6,9,12}, 50)); }
+}
+```
+
+### Problem 14 — AggCows (H)
+
+```java
+class AggCows {
+    static int largestMin(int[] pos, int cows) {
+        java.util.Arrays.sort(pos);
+        int l = 1, r = pos[pos.length-1] - pos[0], ans = 0;
+        while (l <= r) {
+            int m = l + (r - l) / 2, last = pos[0], placed = 1;
+            for (int i = 1; i < pos.length; i++) if (pos[i] - last >= m) { placed++; last = pos[i]; }
+            if (placed >= cows) { ans = m; l = m + 1; } else r = m - 1;
+        }
+        return ans;
+    }
+    public static void main(String[] args) { System.out.println(largestMin(new int[]{1,2,8,4,9}, 3)); }
+}
+```
+
+### Problem 15 — SplitLargest (H)
+
+```java
+class SplitLargest {
+    static int split(int[] a, int m) {
+        long lo = 0, hi = 0;
+        for (int x : a) { lo = Math.max(lo, x); hi += x; }
+        while (lo < hi) {
+            long mid = lo + (hi - lo) / 2;
+            int parts = 1, cur = 0;
+            for (int x : a) { if (cur + x > mid) { parts++; cur = 0; } cur += x; }
+            if (parts <= m) hi = mid; else lo = mid + 1;
+        }
+        return (int) lo;
+    }
+    public static void main(String[] args) { System.out.println(split(new int[]{7,2,5,10,8}, 2)); }
+}
+```
+

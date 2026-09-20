@@ -325,3 +325,314 @@ Yes, with a monotonic stack.
 - Monotonic stack: next/prev greater/smaller in O(n).
 
 Tomorrow: **Queue & Deque**.
+
+
+## Solutions
+
+### Problem 1 — Parens (E)
+
+```java
+class Parens {
+    public static void main(String[] args) {
+        String s = "()[]{}";
+        java.util.Deque<Character> st = new java.util.ArrayDeque<>();
+        boolean ok = true;
+        for (char c : s.toCharArray()) {
+            if ("({[".indexOf(c) >= 0) st.push(c);
+            else if (st.isEmpty()) ok = false;
+            else {
+                char o = st.pop();
+                if (c==')'&&o!='('||c=='}'&&o!='{'||c==']'&&o!='[') ok = false;
+            }
+        }
+        System.out.println(ok && st.isEmpty());
+    }
+}
+```
+
+### Problem 2 — StackArr (E)
+
+```java
+class StackArr {
+    int[] a = new int[100]; int top = -1;
+    void push(int x) { a[++top] = x; }
+    int pop() { return a[top--]; }
+    int peek() { return a[top]; }
+    boolean empty() { return top == -1; }
+    public static void main(String[] args) {
+        StackArr s = new StackArr(); s.push(1); s.push(2);
+        System.out.println(s.pop());
+    }
+}
+```
+
+### Problem 3 — StackQ (E)
+
+```java
+class StackQ {
+    java.util.Queue<Integer> q = new java.util.LinkedList<>();
+    void push(int x) { q.add(x); for (int i = 0; i < q.size()-1; i++) q.add(q.poll()); }
+    int pop() { return q.poll(); }
+    int top() { return q.peek(); }
+    public static void main(String[] args) {
+        StackQ s = new StackQ(); s.push(1); s.push(2);
+        System.out.println(s.top() + " " + s.pop());
+    }
+}
+```
+
+### Problem 4 — MinSt (E)
+
+```java
+class MinSt {
+    java.util.Deque<Integer> s = new java.util.ArrayDeque<>();
+    java.util.Deque<Integer> m = new java.util.ArrayDeque<>();
+    void push(int x) { s.push(x); if (m.isEmpty() || x <= m.peek()) m.push(x); }
+    int pop() { int v = s.pop(); if (v == m.peek()) m.pop(); return v; }
+    int min() { return m.peek(); }
+    public static void main(String[] args) {
+        MinSt s = new MinSt(); s.push(3); s.push(1); s.push(5);
+        System.out.println(s.min());
+    }
+}
+```
+
+### Problem 5 — RevStr (E)
+
+```java
+class RevStr {
+    public static void main(String[] args) {
+        String s = "hello";
+        java.util.Deque<Character> st = new java.util.ArrayDeque<>();
+        for (char c : s.toCharArray()) st.push(c);
+        StringBuilder sb = new StringBuilder();
+        while (!st.isEmpty()) sb.append(st.pop());
+        System.out.println(sb);
+    }
+}
+```
+
+### Problem 6 — NGE (M)
+
+```java
+class NGE {
+    public static void main(String[] args) {
+        int[] a = {4,1,2}; int[] res = new int[a.length];
+        java.util.Deque<Integer> st = new java.util.ArrayDeque<>();
+        for (int i = 0; i < a.length; i++) {
+            while (!st.isEmpty() && a[st.peek()] < a[i]) res[st.pop()] = a[i];
+            st.push(i);
+        }
+        while (!st.isEmpty()) res[st.pop()] = -1;
+        System.out.println(java.util.Arrays.toString(res));
+    }
+}
+```
+
+### Problem 7 — Temps (M)
+
+```java
+class Temps {
+    public static void main(String[] args) {
+        int[] t = {73,74,75,71,69,72,76,73};
+        int[] res = new int[t.length];
+        java.util.Deque<Integer> st = new java.util.ArrayDeque<>();
+        for (int i = 0; i < t.length; i++) {
+            while (!st.isEmpty() && t[st.peek()] < t[i]) { res[st.pop()] = i - st.pop(); st.push(i); /* bug — recompute */ }
+            // correct version below
+            st.clear();
+            for (int j = 0; j < t.length; j++) {
+                while (!st.isEmpty() && t[st.peek()] < t[j]) { int idx = st.pop(); res[idx] = j - idx; }
+                st.push(j);
+            }
+            while (!st.isEmpty()) res[st.pop()] = 0;
+            break;
+        }
+        System.out.println(java.util.Arrays.toString(res));
+    }
+}
+```
+
+### Problem 8 — RPN (M)
+
+```java
+class RPN {
+    public static void main(String[] args) {
+        String[] t = {"2","1","+","3","*"};
+        java.util.Deque<Integer> s = new java.util.ArrayDeque<>();
+        for (String x : t) {
+            if ("+-*/".contains(x)) {
+                int b = s.pop(), a = s.pop();
+                switch (x) { case "+" -> s.push(a+b); case "-" -> s.push(a-b); case "*" -> s.push(a*b); case "/" -> s.push(a/b); }
+            } else s.push(Integer.parseInt(x));
+        }
+        System.out.println(s.pop());
+    }
+}
+```
+
+### Problem 9 — Decode (M)
+
+```java
+class Decode {
+    public static void main(String[] args) {
+        String s = "3[a2[c]]";
+        java.util.Deque<Integer> cnt = new java.util.ArrayDeque<>();
+        java.util.Deque<StringBuilder> res = new java.util.ArrayDeque<>();
+        res.push(new StringBuilder());
+        int k = 0;
+        for (char c : s.toCharArray()) {
+            if (Character.isDigit(c)) k = k * 10 + c - '0';
+            else if (c == '[') { cnt.push(k); res.push(new StringBuilder()); k = 0; }
+            else if (c == ']') { StringBuilder cur = res.pop(); int n = cnt.pop(); StringBuilder prev = res.peek(); for (int i = 0; i < n; i++) prev.append(cur); }
+            else res.peek().append(c);
+        }
+        System.out.println(res.pop());
+    }
+}
+```
+
+### Problem 10 — Asteroid (M)
+
+```java
+class Asteroid {
+    public static void main(String[] args) {
+        int[] a = {5,10,-5};
+        java.util.Deque<Integer> st = new java.util.ArrayDeque<>();
+        for (int x : a) {
+            while (!st.isEmpty() && x < 0 && st.peek() > 0) {
+                int top = st.pop();
+                if (top == -x) { x = 0; break; }
+                if (top > -x) { x = top; break; }
+            }
+            if (x != 0) st.push(x);
+        }
+        int[] out = new int[st.size()]; int i = st.size() - 1;
+        while (!st.isEmpty()) out[i--] = st.pop();
+        System.out.println(java.util.Arrays.toString(out));
+    }
+}
+```
+
+### Problem 11 — Hist (H)
+
+```java
+class Hist {
+    public static void main(String[] args) {
+        int[] h = {2,1,5,6,2,3};
+        java.util.Deque<Integer> st = new java.util.ArrayDeque<>();
+        int best = 0;
+        for (int i = 0; i <= h.length; i++) {
+            int cur = i == h.length ? 0 : h[i];
+            while (!st.isEmpty() && h[st.peek()] > cur) {
+                int ht = h[st.pop()], w = st.isEmpty() ? i : i - st.peek() - 1;
+                best = Math.max(best, ht * w);
+            }
+            st.push(i);
+        }
+        System.out.println(best);
+    }
+}
+```
+
+### Problem 12 — TrapSt (H)
+
+```java
+class TrapSt {
+    public static void main(String[] args) {
+        int[] h = {0,1,0,2,1,0,1,3,2,1,2,1};
+        int n = h.length, w = 0;
+        java.util.Deque<Integer> st = new java.util.ArrayDeque<>();
+        for (int i = 0; i < n; i++) {
+            while (!st.isEmpty() && h[i] > h[st.peek()]) {
+                int bot = h[st.pop()];
+                if (st.isEmpty()) break;
+                int dist = i - st.peek() - 1;
+                int ht = Math.min(h[i], h[st.peek()]) - bot;
+                w += dist * ht;
+            }
+            st.push(i);
+        }
+        System.out.println(w);
+    }
+}
+```
+
+### Problem 13 — Calc (H)
+
+```java
+class Calc {
+    public static void main(String[] args) {
+        String s = "1+2*3";
+        java.util.Deque<Integer> nums = new java.util.ArrayDeque<>();
+        java.util.Deque<Character> ops = new java.util.ArrayDeque<>();
+        int num = 0;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (Character.isDigit(c)) num = num * 10 + c - '0';
+            if (i == s.length()-1 || "+-*/".indexOf(c) >= 0) {
+                nums.push(num); num = 0;
+                if (!ops.isEmpty() && ("*/".indexOf(ops.peek()) >= 0)) {
+                    char op = ops.pop(); int b = nums.pop(), a = nums.pop();
+                    nums.push(op=='*' ? a*b : a/b);
+                }
+                if (i < s.length()-1) ops.push(c);
+            }
+        }
+        while (!ops.isEmpty()) { int b = nums.pop(), a = nums.pop(); nums.push(ops.pop()=='+' ? a+b : a-b); }
+        System.out.println(nums.pop());
+    }
+}
+```
+
+### Problem 14 — MaxRect (H)
+
+```java
+class MaxRect {
+    // Largest rectangle of 1s in matrix. Use histogram on each row.
+    public static void main(String[] args) {
+        char[][] m = {{'1','0','1','0','0'},{'1','0','1','1','1'},{'1','1','1','1','1'},{'1','0','0','1','0'}};
+        int r = m.length, c = m[0].length, best = 0;
+        int[] h = new int[c];
+        for (int i = 0; i < r; i++) {
+            for (int j = 0; j < c; j++) h[j] = m[i][j]=='1' ? h[j]+1 : 0;
+            best = Math.max(best, hist(h));
+        }
+        System.out.println(best);
+    }
+    static int hist(int[] h) {
+        java.util.Deque<Integer> st = new java.util.ArrayDeque<>();
+        int best = 0;
+        for (int i = 0; i <= h.length; i++) {
+            int cur = i == h.length ? 0 : h[i];
+            while (!st.isEmpty() && h[st.peek()] > cur) {
+                int ht = h[st.pop()], w = st.isEmpty() ? i : i - st.peek() - 1;
+                best = Math.max(best, ht * w);
+            }
+            st.push(i);
+        }
+        return best;
+    }
+}
+```
+
+### Problem 15 — RemoveK (H)
+
+```java
+class RemoveK {
+    public static void main(String[] args) {
+        String num = "1432219"; int k = 3;
+        java.util.Deque<Character> st = new java.util.ArrayDeque<>();
+        for (char c : num.toCharArray()) {
+            while (k > 0 && !st.isEmpty() && st.peek() > c) { st.pop(); k--; }
+            st.push(c);
+        }
+        while (k-- > 0) st.pop();
+        StringBuilder sb = new StringBuilder();
+        boolean leading = true;
+        for (char c : st) { if (leading && c=='0') continue; leading = false; sb.append(c); }
+        System.out.println(sb.length() == 0 ? "0" : sb);
+    }
+}
+```
+

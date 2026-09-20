@@ -466,3 +466,179 @@ It splits in half log n times, and merging takes O(n) at each level → total O(
 - Amortised O(1) ≠ always O(1).
 
 Tomorrow: **Math & Problem-Solving Fundamentals** — GCD, primes, bit manipulation, and the problem-solving framework.
+
+
+## Solutions
+
+### Problem 1 — Problem 1 (E)
+
+```java
+// Read each snippet and assign: O(1), O(n), O(n²), O(log n), O(n log n)
+// Sample answers:
+// a) "return a[0];"          -> O(1)
+// b) "for (int x : a) ..."   -> O(n)
+// c) "for i { for j { ... } }" -> O(n²)
+// d) "while (n > 1) n /= 2;" -> O(log n)
+// e) Arrays.sort(a);          -> O(n log n)
+class ComplexityAnswers { public static void main(String[] args) {
+    System.out.println("O(1), O(n), O(n²), O(log n), O(n log n)"); }
+}
+```
+
+### Problem 2 — Problem 2 (E)
+
+```java
+// Nested loop over the same array -> O(n²)
+class Nested { public static void main(String[] args) {
+    int n = 100;
+    long ops = 0;
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++) ops++;
+    System.out.println("ops=" + ops);   // 10000
+} }
+```
+
+### Problem 3 — Problem 3 (E)
+
+```java
+// Triple nested -> O(n³)
+class Triple { public static void main(String[] args) {
+    int n = 50;
+    long ops = 0;
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+            for (int k = 0; k < n; k++) ops++;
+    System.out.println("ops=" + ops);   // 125000
+} }
+```
+
+### Problem 4 — Problem 4 (E)
+
+```java
+// Any fixed number of statements (no loops) -> O(1)
+class Const { public static void main(String[] args) {
+    int x = 5; x += 3; x *= 2;
+    System.out.println(x);   // O(1)
+} }
+```
+
+### Problem 5 — Problem 5 (E)
+
+```java
+// Two independent single-pass loops over n -> O(2n) = O(n)
+class TwoLoops { public static void main(String[] args) {
+    int n = 1000, s1 = 0, s2 = 0;
+    for (int i = 0; i < n; i++) s1 += i;     // O(n)
+    for (int i = 0; i < n; i++) s2 += i * i; // O(n)
+    // Total O(n) + O(n) = O(2n) = O(n)
+    System.out.println(s1 + " " + s2);
+} }
+```
+
+### Problem 6 — Problem 6 (M)
+
+```java
+// while (n > 1) n /= 2; -> O(log n)
+class Halving { public static void main(String[] args) {
+    int n = 1024, steps = 0;
+    while (n > 1) { n /= 2; steps++; }
+    System.out.println("steps=" + steps);   // 10
+} }
+```
+
+### Problem 7 — Problem 7 (M)
+
+```java
+// outer loop O(n), inner halves n each pass -> O(n log n)
+class DoubleInner { public static void main(String[] args) {
+    int n = 1024, ops = 0;
+    for (int i = 1; i <= n; i++)           // n times
+        for (int j = n; j > 1; j /= 2) ops++;  // log n
+    System.out.println("ops=" + ops);   // ~ n log n
+} }
+```
+
+### Problem 8 — Problem 8 (M)
+
+```java
+// Recursive halving: f(n) = f(n/2) + 1 -> O(log n)
+class RecurHalve {
+    static int f(int n) { return n <= 1 ? 0 : 1 + f(n / 2); }
+    public static void main(String[] args) {
+        System.out.println(f(1024));   // 10
+    }
+}
+```
+
+### Problem 9 — Problem 9 (M)
+
+```java
+// Two arrays of sizes m and n processed independently -> O(m + n)
+class TwoArrs { public static void main(String[] args) {
+    int[] a = {1,2,3}, b = {4,5,6,7,8};
+    int s = 0;
+    for (int x : a) s += x;
+    for (int x : b) s += x;
+    System.out.println(s);   // O(m + n)
+} }
+```
+
+### Problem 10 — Problem 10 (M)
+
+```java
+// StringBuilder.append in a loop -> O(n) amortised
+class SB { public static void main(String[] args) {
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < 1000; i++) sb.append("x");
+    System.out.println(sb.length());   // amortised O(n)
+} }
+```
+
+### Problem 11 — Problem 11 (H)
+
+```java
+// Recursion tree with 2 children, depth k -> 2^k nodes
+class Tree { public static void main(String[] args) {
+    System.out.println("2^10 = " + (1 << 10));   // 1024
+} }
+```
+
+### Problem 12 — Problem 12 (H)
+
+```java
+// Merge sort: log n levels, each O(n) -> O(n log n)
+class MS { public static void main(String[] args) {
+    System.out.println("Merge sort -> O(n log n)");
+} }
+```
+
+### Problem 13 — Problem 13 (H)
+
+```java
+// Quick sort worst case (sorted input, bad pivot) -> O(n²)
+class QS { public static void main(String[] args) {
+    System.out.println("Quicksort worst case -> O(n²)");
+} }
+```
+
+### Problem 14 — Problem 14 (H)
+
+```java
+// Naive recursive Fibonacci: T(n) = T(n-1) + T(n-2) + O(1) -> O(2^n)
+class Fib {
+    static int f(int n) { return n < 2 ? n : f(n-1) + f(n-2); }
+    public static void main(String[] args) {
+        System.out.println(f(10));
+    }
+}
+```
+
+### Problem 15 — Problem 15 (H)
+
+```java
+// Master Theorem case 3: f(n) dominates polylog, e.g. T(n) = 2T(n/2) + n^2 -> O(n^2)
+class MT { public static void main(String[] args) {
+    System.out.println("Case 3 -> O(n^2) for T(n)=2T(n/2)+n^2");
+} }
+```
+

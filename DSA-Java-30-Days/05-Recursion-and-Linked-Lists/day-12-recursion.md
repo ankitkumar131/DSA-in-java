@@ -335,3 +335,190 @@ When depth is large (> 10⁴ typically) — stack overflow.
 - Java doesn't optimise tail calls — convert to iteration when needed.
 
 Tomorrow: **Linked List**.
+
+
+## Solutions
+
+### Problem 1 — Fact (E)
+
+```java
+class Fact {
+    static long f(int n) { return n <= 1 ? 1 : n * f(n-1); }
+    public static void main(String[] args) { System.out.println(f(6)); }
+}
+```
+
+### Problem 2 — PowN (E)
+
+```java
+class PowN {
+    static long p(long b, int e) { return e == 0 ? 1 : b * p(b, e-1); }
+    public static void main(String[] args) { System.out.println(p(2, 10)); }
+}
+```
+
+### Problem 3 — DigitSumR (E)
+
+```java
+class DigitSumR {
+    static int s(int n) { return n == 0 ? 0 : n % 10 + s(n / 10); }
+    public static void main(String[] args) { System.out.println(s(12345)); }
+}
+```
+
+### Problem 4 — RevStrR (E)
+
+```java
+class RevStrR {
+    static String r(String s) { return s.length() <= 1 ? s : r(s.substring(1)) + s.charAt(0); }
+    public static void main(String[] args) { System.out.println(r("hello")); }
+}
+```
+
+### Problem 5 — Countdown (E)
+
+```java
+class Countdown {
+    static void cd(int n) {
+        if (n == 0) return;
+        System.out.println(n);
+        cd(n-1);
+    }
+    public static void main(String[] args) { cd(5); }
+}
+```
+
+### Problem 6 — FibMemo (M)
+
+```java
+class FibMemo {
+    static long f(int n, long[] m) {
+        if (n < 2) return n;
+        if (m[n] != 0) return m[n];
+        return m[n] = f(n-1, m) + f(n-2, m);
+    }
+    public static void main(String[] args) { System.out.println(f(40, new long[41])); }
+}
+```
+
+### Problem 7 — GCDR (M)
+
+```java
+class GCDR {
+    static int g(int a, int b) { return b == 0 ? a : g(b, a % b); }
+    public static void main(String[] args) { System.out.println(g(12, 18)); }
+}
+```
+
+### Problem 8 — Hanoi (M)
+
+```java
+class Hanoi {
+    static void h(int n, char a, char c, char b) {
+        if (n == 0) return;
+        h(n-1, a, b, c);
+        System.out.println("disk " + n + ": " + a + " -> " + c);
+        h(n-1, b, c, a);
+    }
+    public static void main(String[] args) { h(3, 'A', 'C', 'B'); }
+}
+```
+
+### Problem 9 — PalRec (M)
+
+```java
+class PalRec {
+    static boolean p(String s, int l, int r) { return l >= r || (s.charAt(l) == s.charAt(r) && p(s, l+1, r-1)); }
+    public static void main(String[] args) { System.out.println(p("racecar", 0, 6)); }
+}
+```
+
+### Problem 10 — PowXN (M)
+
+```java
+class PowXN {
+    static double p(double x, long n) {
+        if (n == 0) return 1;
+        if (n < 0) return 1 / p(x, -n);
+        double h = p(x, n / 2);
+        return n % 2 == 0 ? h * h : h * h * x;
+    }
+    public static void main(String[] args) { System.out.println(p(2.0, 10)); }
+}
+```
+
+### Problem 11 — PermsR (H)
+
+```java
+class PermsR {
+    static void perm(char[] a, int i) {
+        if (i == a.length - 1) { System.out.println(new String(a)); return; }
+        for (int j = i; j < a.length; j++) { swap(a, i, j); perm(a, i+1); swap(a, i, j); }
+    }
+    static void swap(char[] a, int i, int j) { char t = a[i]; a[i] = a[j]; a[j] = t; }
+    public static void main(String[] args) { perm("ab".toCharArray(), 0); }
+}
+```
+
+### Problem 12 — SubsetSum (H)
+
+```java
+class SubsetSum {
+    static int count(int[] a, int i, int sum) {
+        if (i == a.length) return sum == 0 ? 1 : 0;
+        return count(a, i+1, sum) + count(a, i+1, sum - a[i]);
+    }
+    public static void main(String[] args) { System.out.println(count(new int[]{1,2,3,4}, 0, 4)); }
+}
+```
+
+### Problem 13 — LetterCase (H)
+
+```java
+class LetterCase {
+    static void bt(String s, int i, StringBuilder cur) {
+        if (i == s.length()) { System.out.println(cur); return; }
+        char c = s.charAt(i);
+        if (Character.isLetter(c)) {
+            cur.append(Character.toLowerCase(c)); bt(s, i+1, cur); cur.deleteCharAt(cur.length()-1);
+            cur.append(Character.toUpperCase(c)); bt(s, i+1, cur); cur.deleteCharAt(cur.length()-1);
+        } else { cur.append(c); bt(s, i+1, cur); cur.deleteCharAt(cur.length()-1); }
+    }
+    public static void main(String[] args) { bt("a1b", 0, new StringBuilder()); }
+}
+```
+
+### Problem 14 — DiffWays (H)
+
+```java
+class DiffWays {
+    static java.util.List<Integer> ways(String expr) {
+        java.util.List<Integer> res = new java.util.ArrayList<>();
+        for (int i = 0; i < expr.length(); i++) {
+            char c = expr.charAt(i);
+            if (c == '+' || c == '-' || c == '*') {
+                for (int l : ways(expr.substring(0, i)))
+                    for (int r : ways(expr.substring(i+1))) {
+                        if (c == '+') res.add(l + r);
+                        else if (c == '-') res.add(l - r);
+                        else res.add(l * r);
+                    }
+            }
+        }
+        if (res.isEmpty()) res.add(Integer.parseInt(expr));
+        return res;
+    }
+    public static void main(String[] args) { System.out.println(ways("2-1-1")); }
+}
+```
+
+### Problem 15 — Strobogrammatic (H)
+
+```java
+class Strobogrammatic {
+    static boolean isStrobo(char a, char b) { return (a=='0'&&b=='0')||(a=='1'&&b=='1')||(a=='6'&&b=='9')||(a=='8'&&b=='8')||(a=='9'&&b=='6'); }
+    static boolean f(String s, int l, int r) { return l >= r || (isStrobo(s.charAt(l), s.charAt(r)) && f(s, l+1, r-1)); }
+    public static void main(String[] args) { System.out.println(f("69", 0, 1)); }
+}
+```
+

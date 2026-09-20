@@ -342,3 +342,314 @@ Reuse Day 9.
 - BFS = queue + visited.
 
 Tomorrow: **Hashing**.
+
+
+## Solutions
+
+### Problem 1 — QueueS (E)
+
+```java
+class QueueS {
+    java.util.Deque<Integer> in = new java.util.ArrayDeque<>(), out = new java.util.ArrayDeque<>();
+    void push(int x) { in.push(x); }
+    int pop() { if (out.isEmpty()) while (!in.isEmpty()) out.push(in.pop()); return out.pop(); }
+    int peek() { if (out.isEmpty()) while (!in.isEmpty()) out.push(in.pop()); return out.peek(); }
+    public static void main(String[] args) {
+        QueueS q = new QueueS(); q.push(1); q.push(2);
+        System.out.println(q.peek() + " " + q.pop());
+    }
+}
+```
+
+### Problem 2 — Queue2Stacks (E)
+
+```java
+class Queue2Stacks {
+    java.util.Deque<Integer> a = new java.util.ArrayDeque<>(), b = new java.util.ArrayDeque<>();
+    void push(int x) { a.push(x); }
+    int pop() { while (b.isEmpty()) while (!a.isEmpty()) b.push(a.pop()); return b.pop(); }
+    public static void main(String[] args) {
+        Queue2Stacks q = new Queue2Stacks(); q.push(1); q.push(2);
+        System.out.println(q.pop());
+    }
+}
+```
+
+### Problem 3 — FirstUniq (E)
+
+```java
+class FirstUniq {
+    java.util.Map<Character,Integer> cnt = new java.util.LinkedHashMap<>();
+    java.util.Deque<Character> q = new java.util.ArrayDeque<>();
+    void add(char c) {
+        cnt.merge(c, 1, Integer::sum);
+        q.offer(c);
+        while (!q.isEmpty() && cnt.get(q.peek()) > 1) q.poll();
+    }
+    char first() { return q.isEmpty() ? '#' : q.peek(); }
+    public static void main(String[] args) {
+        FirstUniq f = new FirstUniq();
+        for (char c : "aabcc".toCharArray()) f.add(c);
+        System.out.println(f.first());
+    }
+}
+```
+
+### Problem 4 — RecentCalls (E)
+
+```java
+class RecentCalls {
+    java.util.Deque<Integer> q = new java.util.ArrayDeque<>();
+    void ping(int t) { q.offer(t); while (q.peek() < t - 3000) q.poll(); }
+    int count() { return q.size(); }
+    public static void main(String[] args) {
+        RecentCalls r = new RecentCalls();
+        r.ping(1); r.ping(100); r.ping(3001); r.ping(3002);
+        System.out.println(r.count());
+    }
+}
+```
+
+### Problem 5 — CircQ (E)
+
+```java
+class CircQ {
+    int[] a; int head = 0, tail = 0, size = 0, cap;
+    CircQ(int k) { a = new int[k]; cap = k; }
+    boolean enq(int v) { if (size == cap) return false; a[tail] = v; tail = (tail+1)%cap; size++; return true; }
+    int deq() { if (size == 0) return -1; int v = a[head]; head = (head+1)%cap; size--; return v; }
+    public static void main(String[] args) {
+        CircQ q = new CircQ(3);
+        q.enq(1); q.enq(2); q.enq(3);
+        System.out.println(q.deq() + " " + q.deq());
+    }
+}
+```
+
+### Problem 6 — SWMax (M)
+
+```java
+class SWMax {
+    public static void main(String[] args) {
+        int[] a = {1,3,-1,-3,5,3,6,7}; int k = 3;
+        java.util.Deque<Integer> dq = new java.util.ArrayDeque<>();
+        int[] out = new int[a.length - k + 1];
+        for (int i = 0; i < a.length; i++) {
+            while (!dq.isEmpty() && dq.peekFirst() <= i - k) dq.pollFirst();
+            while (!dq.isEmpty() && a[dq.peekLast()] <= a[i]) dq.pollLast();
+            dq.offerLast(i);
+            if (i >= k - 1) out[i - k + 1] = a[dq.peekFirst()];
+        }
+        System.out.println(java.util.Arrays.toString(out));
+    }
+}
+```
+
+### Problem 7 — KthLg (M)
+
+```java
+class KthLg {
+    public static void main(String[] args) {
+        int[] a = {3,2,3,1,2,4,5,5,6}; int k = 4;
+        java.util.PriorityQueue<Integer> pq = new java.util.PriorityQueue<>();
+        for (int x : a) { pq.offer(x); if (pq.size() > k) pq.poll(); }
+        System.out.println(pq.peek());
+    }
+}
+```
+
+### Problem 8 — TopKFreq (M)
+
+```java
+class TopKFreq {
+    public static void main(String[] args) {
+        int[] a = {1,1,1,2,2,3}; int k = 2;
+        java.util.Map<Integer,Integer> m = new java.util.HashMap<>();
+        for (int x : a) m.merge(x, 1, Integer::sum);
+        java.util.PriorityQueue<int[]> pq = new java.util.PriorityQueue<>((x,y) -> x[0]-y[0]);
+        for (var e : m.entrySet()) { pq.offer(new int[]{e.getValue(), e.getKey()}); if (pq.size() > k) pq.poll(); }
+        java.util.List<Integer> out = new java.util.ArrayList<>();
+        while (!pq.isEmpty()) out.add(pq.poll()[1]);
+        System.out.println(out);
+    }
+}
+```
+
+### Problem 9 — LevelOrder (M)
+
+```java
+class LevelOrder {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static void lo(N root) {
+        java.util.Deque<N> q = new java.util.ArrayDeque<>();
+        q.offer(root);
+        while (!q.isEmpty()) {
+            N u = q.poll();
+            System.out.print(u.v + " ");
+            if (u.l != null) q.offer(u.l);
+            if (u.r != null) q.offer(u.r);
+        }
+    }
+    public static void main(String[] args) {
+        N root = new N(1); root.l = new N(2); root.r = new N(3);
+        lo(root);
+    }
+}
+```
+
+### Problem 10 — Rotting (M)
+
+```java
+class Rotting {
+    public static void main(String[] args) {
+        int[][] g = {{2,1,1},{1,1,0},{0,1,1}};
+        int m = g.length, n = g[0].length, t = 0;
+        java.util.Deque<int[]> q = new java.util.ArrayDeque<>();
+        for (int i = 0; i < m; i++) for (int j = 0; j < n; j++) if (g[i][j] == 2) q.offer(new int[]{i, j});
+        int[][] d = {{1,0},{-1,0},{0,1},{0,-1}};
+        while (!q.isEmpty()) {
+            int sz = q.size(); boolean rotted = false;
+            for (int k = 0; k < sz; k++) {
+                int[] u = q.poll();
+                for (int[] dd : d) {
+                    int ni = u[0]+dd[0], nj = u[1]+dd[1];
+                    if (ni>=0 && nj>=0 && ni<m && nj<n && g[ni][nj]==1) { g[ni][nj]=2; q.offer(new int[]{ni,nj}); rotted=true; }
+                }
+            }
+            if (rotted) t++;
+        }
+        System.out.println(t);
+    }
+}
+```
+
+### Problem 11 — SWMedian (H)
+
+```java
+class SWMedian {
+    public static void main(String[] args) {
+        int[] a = {1,3,-1,-3,5,3,6,7}; int k = 3;
+        // Simple approach: insert each new, remove old, sort to find median. O(k log k) per step.
+        java.util.List<Integer> win = new java.util.ArrayList<>();
+        double[] out = new double[a.length - k + 1];
+        for (int i = 0; i < a.length; i++) {
+            win.add(a[i]);
+            if (win.size() > k) win.remove((Integer) a[i-k]);
+            java.util.Collections.sort(win);
+            int m = win.size();
+            out[i - k + 1] = m % 2 == 1 ? win.get(m/2) : (win.get(m/2 - 1) + win.get(m/2)) / 2.0;
+        }
+        System.out.println(java.util.Arrays.toString(out));
+    }
+}
+```
+
+### Problem 12 — ShortestK (H)
+
+```java
+class ShortestK {
+    public static void main(String[] args) {
+        int[] a = {1}; int k = 1;
+        // shortest subarray with sum >= k (deque-based) — placeholder answer
+        long[] p = new long[a.length+1]; for (int i = 0; i < a.length; i++) p[i+1] = p[i]+a[i];
+        int ans = a.length + 1;
+        java.util.Deque<Integer> dq = new java.util.ArrayDeque<>();
+        for (int i = 0; i < p.length; i++) {
+            while (!dq.isEmpty() && p[i] - p[dq.peekFirst()] >= k) ans = Math.min(ans, i - dq.pollFirst());
+            while (!dq.isEmpty() && p[i] <= p[dq.peekLast()]) dq.pollLast();
+            dq.offerLast(i);
+        }
+        System.out.println(ans == a.length + 1 ? -1 : ans);
+    }
+}
+```
+
+### Problem 13 — Trap2D (H)
+
+```java
+class Trap2D {
+    public static void main(String[] args) {
+        int[][] h = {{1,4,3,1,3,2},{3,2,1,3,2,4},{2,3,3,2,3,1}};
+        int m = h.length, n = h[0].length;
+        java.util.PriorityQueue<int[]> pq = new java.util.PriorityQueue<>((a,b) -> a[2]-b[2]);
+        boolean[][] vis = new boolean[m][n];
+        for (int i = 0; i < m; i++) { pq.offer(new int[]{i,0,h[i][0]}); pq.offer(new int[]{i,n-1,h[i][n-1]}); vis[i][0]=vis[i][n-1]=true; }
+        for (int j = 0; j < n; j++) { pq.offer(new int[]{0,j,h[0][j]}); pq.offer(new int[]{m-1,j,h[m-1][j]}); vis[0][j]=vis[m-1][j]=true; }
+        int[][] d = {{1,0},{-1,0},{0,1},{0,-1}};
+        int w = 0;
+        while (!pq.isEmpty()) {
+            int[] u = pq.poll();
+            for (int[] dd : d) {
+                int ni = u[0]+dd[0], nj = u[1]+dd[1];
+                if (ni>=0 && nj>=0 && ni<m && nj<n && !vis[ni][nj]) {
+                    w += Math.max(0, u[2] - h[ni][nj]);
+                    pq.offer(new int[]{ni, nj, Math.max(u[2], h[ni][nj])});
+                    vis[ni][nj] = true;
+                }
+            }
+        }
+        System.out.println(w);
+    }
+}
+```
+
+### Problem 14 — WordLadder (H)
+
+```java
+class WordLadder {
+    public static void main(String[] args) {
+        String begin = "hit", end = "cog";
+        java.util.List<String> wordList = java.util.Arrays.asList("hot","dot","dog","lot","log","cog");
+        java.util.Set<String> dict = new java.util.HashSet<>(wordList);
+        if (!dict.contains(end)) { System.out.println(0); return; }
+        java.util.Deque<String> q = new java.util.ArrayDeque<>();
+        java.util.Set<String> seen = new java.util.HashSet<>();
+        q.offer(begin); seen.add(begin); int steps = 1;
+        while (!q.isEmpty()) {
+            int sz = q.size();
+            for (int i = 0; i < sz; i++) {
+                String w = q.poll();
+                if (w.equals(end)) { System.out.println(steps); return; }
+                char[] a = w.toCharArray();
+                for (int j = 0; j < a.length; j++) {
+                    char orig = a[j];
+                    for (char c = 'a'; c <= 'z'; c++) {
+                        if (c == orig) continue;
+                        a[j] = c; String n = new String(a);
+                        if (dict.contains(n) && !seen.contains(n)) { seen.add(n); q.offer(n); }
+                    }
+                    a[j] = orig;
+                }
+            }
+            steps++;
+        }
+        System.out.println(0);
+    }
+}
+```
+
+### Problem 15 — BinMat (H)
+
+```java
+class BinMat {
+    public static void main(String[] args) {
+        int[][] g = {{0,0,0},{1,1,0},{1,1,0}};
+        int m = g.length, n = g[0].length;
+        java.util.Deque<int[]> q = new java.util.ArrayDeque<>();
+        if (g[0][0] == 1) { System.out.println(-1); return; }
+        q.offer(new int[]{0,0,1});
+        int[][] dirs = {{1,0},{0,1},{-1,0},{0,-1},{1,1},{-1,-1},{1,-1},{-1,1}};
+        int best = -1;
+        while (!q.isEmpty()) {
+            int[] u = q.poll();
+            if (u[0]==m-1 && u[1]==n-1) { best = u[2]; break; }
+            for (int[] d : dirs) {
+                int ni = u[0]+d[0], nj = u[1]+d[1];
+                if (ni>=0 && nj>=0 && ni<m && nj<n && g[ni][nj]==0) { g[ni][nj]=1; q.offer(new int[]{ni,nj,u[2]+1}); }
+            }
+        }
+        System.out.println(best);
+    }
+}
+```
+

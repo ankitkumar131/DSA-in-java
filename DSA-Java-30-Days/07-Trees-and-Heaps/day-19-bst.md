@@ -296,3 +296,273 @@ Use a max-heap for the lower half and min-heap for the upper half.
 - Unbalanced BST = O(n); balanced = O(log n).
 
 Tomorrow: **Heap & Priority Queue**.
+
+
+## Solutions
+
+### Problem 1 — SearchBST (E)
+
+```java
+class SearchBST {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static N find(N u, int t) {
+        if (u == null || u.v == t) return u;
+        return t < u.v ? find(u.l, t) : find(u.r, t);
+    }
+    public static void main(String[] args) {
+        N root = new N(4); root.l = new N(2); root.r = new N(7); root.l.l = new N(1); root.l.r = new N(3);
+        System.out.println(find(root, 2).v);
+    }
+}
+```
+
+### Problem 2 — InsBST (E)
+
+```java
+class InsBST {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static N ins(N u, int x) {
+        if (u == null) return new N(x);
+        if (x < u.v) u.l = ins(u.l, x); else u.r = ins(u.r, x);
+        return u;
+    }
+    public static void main(String[] args) {
+        N root = null; for (int x : new int[]{5,3,7,1,4}) root = ins(root, x);
+        System.out.println("inserted");
+    }
+}
+```
+
+### Problem 3 — MinMax (E)
+
+```java
+class MinMax {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static N min(N u) { while (u.l != null) u = u.l; return u; }
+    static N max(N u) { while (u.r != null) u = u.r; return u; }
+    public static void main(String[] args) {
+        N root = new N(4); root.l = new N(2); root.r = new N(7);
+        System.out.println(min(root).v + " " + max(root).v);
+    }
+}
+```
+
+### Problem 4 — ValidBST (E)
+
+```java
+class ValidBST {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static boolean valid(N u, long lo, long hi) {
+        if (u == null) return true;
+        if (u.v <= lo || u.v >= hi) return false;
+        return valid(u.l, lo, u.v) && valid(u.r, u.v, hi);
+    }
+    public static void main(String[] args) {
+        N root = new N(2); root.l = new N(1); root.r = new N(3);
+        System.out.println(valid(root, Long.MIN_VALUE, Long.MAX_VALUE));
+    }
+}
+```
+
+### Problem 5 — KthSmallest (E)
+
+```java
+class KthSmallest {
+    static class N { int v; N l, r; int c; N(int v) { this.v = v; } }
+    static int cnt = 0, ans = 0;
+    static void in(N u, int k) { if (u == null) return; in(u.l, k); cnt++; if (cnt == k) ans = u.v; in(u.r, k); }
+    public static void main(String[] args) {
+        N root = new N(3); root.l = new N(1); root.r = new N(4); root.l.r = new N(2);
+        in(root, 2); System.out.println(ans);
+    }
+}
+```
+
+### Problem 6 — DeleteBST (M)
+
+```java
+class DeleteBST {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static N del(N u, int t) {
+        if (u == null) return null;
+        if (t < u.v) u.l = del(u.l, t);
+        else if (t > u.v) u.r = del(u.r, t);
+        else {
+            if (u.l == null) return u.r;
+            if (u.r == null) return u.l;
+            N m = u.r; while (m.l != null) m = m.l;
+            u.v = m.v;
+            u.r = del(u.r, m.v);
+        }
+        return u;
+    }
+    public static void main(String[] args) { System.out.println("see day-19 demo"); }
+}
+```
+
+### Problem 7 — LCA (M)
+
+```java
+class LCA {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static N lca(N u, int a, int b) {
+        if (u == null) return null;
+        if (a < u.v && b < u.v) return lca(u.l, a, b);
+        if (a > u.v && b > u.v) return lca(u.r, a, b);
+        return u;
+    }
+    public static void main(String[] args) {
+        N root = new N(6); root.l = new N(2); root.r = new N(8); root.l.l = new N(0); root.l.r = new N(4); root.l.r.l = new N(3); root.l.r.r = new N(5);
+        System.out.println(lca(root, 2, 8).v);
+    }
+}
+```
+
+### Problem 8 — SortedArrToBST (M)
+
+```java
+class SortedArrToBST {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static N build(int[] a, int l, int r) {
+        if (l > r) return null;
+        int m = l + (r - l) / 2;
+        N u = new N(a[m]);
+        u.l = build(a, l, m - 1); u.r = build(a, m + 1, r);
+        return u;
+    }
+    public static void main(String[] args) {
+        N root = build(new int[]{-10,-3,0,5,9}, 0, 4);
+        System.out.println("built");
+    }
+}
+```
+
+### Problem 9 — TwoSumBST (M)
+
+```java
+class TwoSumBST {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static boolean find(N u, int t) { if (u == null) return false; if (u.v == t) return true; return t < u.v ? find(u.l, t) : find(u.r, t); }
+    static boolean two(N u, int k) {
+        if (u == null) return false;
+        int need = k - u.v;
+        if (need != u.v && find(u, need)) return true;
+        return two(u.l, k) || two(u.r, k);
+    }
+    public static void main(String[] args) {
+        N root = new N(5); root.l = new N(3); root.r = new N(6); root.l.l = new N(2); root.l.r = new N(4); root.r.r = new N(7);
+        System.out.println(two(root, 9));
+    }
+}
+```
+
+### Problem 10 — InorderSucc (M)
+
+```java
+class InorderSucc {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static N succ(N root, N p) {
+        if (p.r != null) { N cur = p.r; while (cur.l != null) cur = cur.l; return cur; }
+        N cur = root, anc = null;
+        while (cur != p) { if (p.v < cur.v) { anc = cur; cur = cur.l; } else cur = cur.r; }
+        return anc;
+    }
+    public static void main(String[] args) { System.out.println("see day-19 demo"); }
+}
+```
+
+### Problem 11 — RecoverBST (H)
+
+```java
+class RecoverBST {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static N a, b, prev;
+    static void ino(N u) {
+        if (u == null) return;
+        ino(u.l);
+        if (prev != null && prev.v > u.v) { if (a == null) a = prev; b = u; }
+        prev = u;
+        ino(u.r);
+    }
+    public static void main(String[] args) {
+        N root = new N(3); root.l = new N(1); root.r = new N(4); root.r.l = new N(2);
+        ino(root); int t = a.v; a.v = b.v; b.v = t;
+        System.out.println("recovered");
+    }
+}
+```
+
+### Problem 12 — KthIter (H)
+
+```java
+class KthIter {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    public static void main(String[] args) {
+        N root = new N(3); root.l = new N(1); root.r = new N(4); root.l.r = new N(2);
+        java.util.Deque<N> s = new java.util.ArrayDeque<>();
+        N cur = root; int cnt = 0, k = 2;
+        while (cur != null || !s.isEmpty()) {
+            while (cur != null) { s.push(cur); cur = cur.l; }
+            cur = s.pop(); cnt++;
+            if (cnt == k) { System.out.println(cur.v); return; }
+            cur = cur.r;
+        }
+    }
+}
+```
+
+### Problem 13 — SerBST (H)
+
+```java
+class SerBST {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static void ser(N u, java.util.List<Integer> out) {
+        if (u == null) return;
+        out.add(u.v); ser(u.l, out); ser(u.r, out);
+    }
+    static int idx = 0;
+    static N des(java.util.List<Integer> t, long lo, long hi) {
+        if (idx >= t.size() || t.get(idx) <= lo || t.get(idx) >= hi) return null;
+        N u = new N(t.get(idx++));
+        u.l = des(t, lo, u.v); u.r = des(t, u.v, hi);
+        return u;
+    }
+    public static void main(String[] args) { System.out.println("see day-19 demo"); }
+}
+```
+
+### Problem 14 — CountSmaller (H)
+
+```java
+class CountSmaller {
+    static class N { int v; int c = 1; N l, r; N(int v) { this.v = v; } }
+    int ans;
+    N root(N u, int v) {
+        if (u == null) return new N(v);
+        if (v <= u.v) { u.c++; u.l = root(u.l, v); }
+        else { ans += u.c; u.r = root(u.r, v); }
+        return u;
+    }
+    public static void main(String[] args) { System.out.println("see day-19 demo"); }
+}
+```
+
+### Problem 15 — MedianStream (H)
+
+```java
+class MedianStream {
+    java.util.PriorityQueue<Integer> lo = new java.util.PriorityQueue<>(java.util.Comparator.reverseOrder());
+    java.util.PriorityQueue<Integer> hi = new java.util.PriorityQueue<>();
+    void add(int n) {
+        lo.offer(n); hi.offer(lo.poll());
+        if (lo.size() < hi.size()) lo.offer(hi.poll());
+    }
+    double med() { return lo.size() > hi.size() ? lo.peek() : ((double)lo.peek() + hi.peek()) / 2; }
+    public static void main(String[] args) {
+        MedianStream m = new MedianStream();
+        for (int x : new int[]{1,2,3}) m.add(x);
+        System.out.println(m.med());
+    }
+}
+```
+

@@ -400,3 +400,240 @@ Because it's stored in the array header (a fixed property), not computed.
 - Use `int[]` for primitives, `ArrayList<Integer>` for dynamic size.
 
 Tomorrow: **Strings**.
+
+
+## Solutions
+
+### Problem 1 — MaxArr (E)
+
+```java
+class MaxArr {
+    public static void main(String[] args) {
+        int[] a = {3, 1, 4, 1, 5, 9, 2, 6};
+        int m = a[0];
+        for (int i = 1; i < a.length; i++) if (a[i] > m) m = a[i];
+        System.out.println(m);   // 9
+    }
+}
+```
+
+### Problem 2 — ReverseArr (E)
+
+```java
+class ReverseArr {
+    static void rev(int[] a, int l, int r) {
+        while (l < r) { int t = a[l]; a[l] = a[r]; a[r] = t; l++; r--; }
+    }
+    public static void main(String[] args) {
+        int[] a = {1,2,3,4}; rev(a, 0, a.length-1);
+        System.out.println(java.util.Arrays.toString(a));
+    }
+}
+```
+
+### Problem 3 — SumArr (E)
+
+```java
+class SumArr {
+    public static void main(String[] args) {
+        int[] a = {3,1,4,1,5}; int s = 0;
+        for (int x : a) s += x;
+        System.out.println(s);
+    }
+}
+```
+
+### Problem 4 — DupBrute (E)
+
+```java
+class DupBrute {
+    public static void main(String[] args) {
+        int[] a = {1, 2, 3, 1};
+        boolean dup = false;
+        for (int i = 0; i < a.length && !dup; i++)
+            for (int j = i+1; j < a.length; j++)
+                if (a[i] == a[j]) { dup = true; break; }
+        System.out.println(dup);
+    }
+}
+```
+
+### Problem 5 — SecondMax (E)
+
+```java
+class SecondMax {
+    public static void main(String[] args) {
+        int[] a = {5, 2, 8, 8, 3};
+        int first = Integer.MIN_VALUE, second = Integer.MIN_VALUE;
+        for (int x : a) {
+            if (x > first) { second = first; first = x; }
+            else if (x < first && x > second) second = x;
+        }
+        System.out.println(second);
+    }
+}
+```
+
+### Problem 6 — RotateK (M)
+
+```java
+class RotateK {
+    static void rev(int[] a, int l, int r) {
+        while (l < r) { int t = a[l]; a[l++] = a[r]; a[r--] = t; }
+    }
+    static void rotate(int[] a, int k) {
+        k %= a.length;
+        rev(a, 0, a.length - 1);
+        rev(a, 0, k - 1);
+        rev(a, k, a.length - 1);
+    }
+    public static void main(String[] args) {
+        int[] a = {1,2,3,4,5}; rotate(a, 2);
+        System.out.println(java.util.Arrays.toString(a));
+    }
+}
+```
+
+### Problem 7 — Kadane (M)
+
+```java
+class Kadane {
+    public static void main(String[] args) {
+        int[] a = {-2,1,-3,4,-1,2,1,-5,4};
+        int maxEnd = a[0], best = a[0];
+        for (int i = 1; i < a.length; i++) {
+            maxEnd = Math.max(a[i], maxEnd + a[i]);
+            best = Math.max(best, maxEnd);
+        }
+        System.out.println(best);   // 6
+    }
+}
+```
+
+### Problem 8 — MoveZeroes (M)
+
+```java
+class MoveZeroes {
+    static void move(int[] a) {
+        int j = 0;
+        for (int x : a) if (x != 0) a[j++] = x;
+        while (j < a.length) a[j++] = 0;
+    }
+    public static void main(String[] args) {
+        int[] a = {0,1,0,3,12}; move(a);
+        System.out.println(java.util.Arrays.toString(a));
+    }
+}
+```
+
+### Problem 9 — Freq (M)
+
+```java
+class Freq {
+    public static void main(String[] args) {
+        int[] a = {1, 2, 2, 3, 3, 3};
+        java.util.Map<Integer,Integer> m = new java.util.HashMap<>();
+        for (int x : a) m.merge(x, 1, Integer::sum);
+        System.out.println(m);
+    }
+}
+```
+
+### Problem 10 — RotMat (M)
+
+```java
+class RotMat {
+    static int[][] rot(int[][] m) {
+        int n = m.length; int[][] r = new int[n][n];
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
+                r[j][n-1-i] = m[i][j];
+        return r;
+    }
+    public static void main(String[] args) {
+        int[][] m = {{1,2},{3,4}};
+        for (int[] row : rot(m)) System.out.println(java.util.Arrays.toString(row));
+    }
+}
+```
+
+### Problem 11 — Stock (H)
+
+```java
+class Stock {
+    public static void main(String[] args) {
+        int[] p = {7,1,5,3,6,4};
+        int min = Integer.MAX_VALUE, profit = 0;
+        for (int v : p) {
+            if (v < min) min = v;
+            else profit = Math.max(profit, v - min);
+        }
+        System.out.println(profit);
+    }
+}
+```
+
+### Problem 12 — ProdSelf (H)
+
+```java
+class ProdSelf {
+    public static void main(String[] args) {
+        int[] a = {1,2,3,4};
+        int n = a.length; int[] out = new int[n];
+        int left = 1;
+        for (int i = 0; i < n; i++) { out[i] = left; left *= a[i]; }
+        int right = 1;
+        for (int i = n - 1; i >= 0; i--) { out[i] *= right; right *= a[i]; }
+        System.out.println(java.util.Arrays.toString(out));
+    }
+}
+```
+
+### Problem 13 — Water (H)
+
+```java
+class Water {
+    public static void main(String[] args) {
+        int[] h = {1,8,6,2,5,4,8,3,7};
+        int l = 0, r = h.length - 1, best = 0;
+        while (l < r) best = Math.max(best, (r-l) * Math.min(h[l], h[r]));
+        System.out.println(best);
+    }
+}
+```
+
+### Problem 14 — Trap (H)
+
+```java
+class Trap {
+    public static void main(String[] args) {
+        int[] h = {0,1,0,2,1,0,1,3,2,1,2,1};
+        int l = 0, r = h.length-1, lM = 0, rM = 0, w = 0;
+        while (l < r) {
+            if (h[l] < h[r]) { lM = Math.max(lM, h[l]); w += lM - h[l++]; }
+            else { rM = Math.max(rM, h[r]); w += rM - h[r--]; }
+        }
+        System.out.println(w);
+    }
+}
+```
+
+### Problem 15 — Spiral (H)
+
+```java
+class Spiral {
+    public static void main(String[] args) {
+        int[][] m = {{1,2,3},{4,5,6},{7,8,9}};
+        int t=0,b=m.length-1,l=0,r=m[0].length-1;
+        java.util.List<Integer> out = new java.util.ArrayList<>();
+        while (t<=b && l<=r) {
+            for (int j=l;j<=r;j++) out.add(m[t][j]); t++;
+            for (int i=t;i<=b;i++) out.add(m[i][r]); r--;
+            if (t<=b) for (int j=r;j>=l;j--) out.add(m[b][j]); b--;
+            if (l<=r) for (int i=b;i>=t;i--) out.add(m[i][l]); l++;
+        }
+        System.out.println(out);
+    }
+}
+```
+

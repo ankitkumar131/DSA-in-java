@@ -335,3 +335,257 @@ Sorted ascending.
 - Height: 1 + max(children). Size: 1 + sum(children).
 
 Tomorrow: **Binary Search Trees**.
+
+
+## Solutions
+
+### Problem 1 — Preorder (E)
+
+```java
+class Preorder {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static void pre(N u) { if (u == null) return; System.out.print(u.v + " "); pre(u.l); pre(u.r); }
+    public static void main(String[] args) {
+        N root = new N(1); root.l = new N(2); root.r = new N(3); root.l.l = new N(4); root.l.r = new N(5);
+        pre(root);
+    }
+}
+```
+
+### Problem 2 — Inorder (E)
+
+```java
+class Inorder {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static void in(N u) { if (u == null) return; in(u.l); System.out.print(u.v + " "); in(u.r); }
+    public static void main(String[] args) {
+        N root = new N(1); root.l = new N(2); root.r = new N(3); root.l.l = new N(4); root.l.r = new N(5);
+        in(root);
+    }
+}
+```
+
+### Problem 3 — Postorder (E)
+
+```java
+class Postorder {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static void post(N u) { if (u == null) return; post(u.l); post(u.r); System.out.print(u.v + " "); }
+    public static void main(String[] args) {
+        N root = new N(1); root.l = new N(2); root.r = new N(3); root.l.l = new N(4); root.l.r = new N(5);
+        post(root);
+    }
+}
+```
+
+### Problem 4 — LevelOrder (E)
+
+```java
+class LevelOrder {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    public static void main(String[] args) {
+        N root = new N(1); root.l = new N(2); root.r = new N(3); root.l.l = new N(4); root.l.r = new N(5);
+        java.util.Deque<N> q = new java.util.ArrayDeque<>(); q.offer(root);
+        while (!q.isEmpty()) { N u = q.poll(); System.out.print(u.v + " "); if (u.l != null) q.offer(u.l); if (u.r != null) q.offer(u.r); }
+    }
+}
+```
+
+### Problem 5 — MaxDepth (E)
+
+```java
+class MaxDepth {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static int d(N u) { return u == null ? 0 : 1 + Math.max(d(u.l), d(u.r)); }
+    public static void main(String[] args) {
+        N root = new N(1); root.l = new N(2); root.r = new N(3); root.l.l = new N(4);
+        System.out.println(d(root));
+    }
+}
+```
+
+### Problem 6 — Same (M)
+
+```java
+class Same {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static boolean eq(N a, N b) {
+        if (a == null && b == null) return true;
+        if (a == null || b == null) return false;
+        return a.v == b.v && eq(a.l, b.l) && eq(a.r, b.r);
+    }
+    public static void main(String[] args) {
+        N a = new N(1); a.l = new N(2); a.r = new N(3);
+        N b = new N(1); b.l = new N(2); b.r = new N(3);
+        System.out.println(eq(a, b));
+    }
+}
+```
+
+### Problem 7 — Invert (M)
+
+```java
+class Invert {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static N inv(N u) { if (u == null) return null; N t = u.l; u.l = inv(u.r); u.r = inv(t); return u; }
+    public static void main(String[] args) {
+        N root = new N(1); root.l = new N(2); root.r = new N(3);
+        inv(root);
+        System.out.println("inverted");
+    }
+}
+```
+
+### Problem 8 — Symm (M)
+
+```java
+class Symm {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static boolean is(N l, N r) {
+        if (l == null && r == null) return true;
+        if (l == null || r == null) return false;
+        return l.v == r.v && is(l.l, r.r) && is(l.r, r.l);
+    }
+    static boolean sym(N root) { return root == null || is(root.l, root.r); }
+    public static void main(String[] args) {
+        N root = new N(1); root.l = new N(2); root.r = new N(2); root.l.l = new N(3); root.r.r = new N(3);
+        System.out.println(sym(root));
+    }
+}
+```
+
+### Problem 9 — Build (M)
+
+```java
+class Build {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static int pi; // index in preorder
+    static N build(int[] pre, int[] in) {
+        java.util.Map<Integer,Integer> m = new java.util.HashMap<>();
+        for (int i = 0; i < in.length; i++) m.put(in[i], i);
+        return helper(pre, 0, in.length - 1, m);
+    }
+    static N helper(int[] pre, int lo, int hi, java.util.Map<Integer,Integer> m) {
+        if (lo > hi) return null;
+        int v = pre[pi++]; N u = new N(v);
+        int mid = m.get(v);
+        u.l = helper(pre, lo, mid - 1, m);
+        u.r = helper(pre, mid + 1, hi, m);
+        return u;
+    }
+    public static void main(String[] args) { System.out.println("see day-18 demo"); }
+}
+```
+
+### Problem 10 — RightSide (M)
+
+```java
+class RightSide {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    public static void main(String[] args) {
+        N root = new N(1); root.l = new N(2); root.r = new N(3); root.l.r = new N(5); root.r.r = new N(4);
+        java.util.List<Integer> out = new java.util.ArrayList<>();
+        dfs(root, 0, out);
+        System.out.println(out);
+    }
+    static void dfs(N u, int d, java.util.List<Integer> out) {
+        if (u == null) return;
+        if (d == out.size()) out.add(u.v);
+        dfs(u.r, d + 1, out); dfs(u.l, d + 1, out);
+    }
+}
+```
+
+### Problem 11 — Vertical (H)
+
+```java
+class Vertical {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    public static void main(String[] args) {
+        N root = new N(3); root.l = new N(9); root.r = new N(20); root.r.l = new N(15); root.r.r = new N(7);
+        java.util.Map<Integer, java.util.List<Integer>> m = new java.util.TreeMap<>();
+        dfs(root, 0, m);
+        System.out.println(m.values());
+    }
+    static void dfs(N u, int col, java.util.Map<Integer, java.util.List<Integer>> m) {
+        if (u == null) return;
+        m.computeIfAbsent(col, k -> new java.util.ArrayList<>()).add(u.v);
+        dfs(u.l, col - 1, m); dfs(u.r, col + 1, m);
+    }
+}
+```
+
+### Problem 12 — RecoverBST (H)
+
+```java
+class RecoverBST {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static N a, b, prev;
+    static void inorder(N u) {
+        if (u == null) return;
+        inorder(u.l);
+        if (prev != null && prev.v > u.v) { if (a == null) a = prev; b = u; }
+        prev = u;
+        inorder(u.r);
+    }
+    public static void main(String[] args) {
+        N root = new N(3); root.l = new N(1); root.r = new N(4); root.r.l = new N(2);
+        inorder(root); int t = a.v; a.v = b.v; b.v = t;
+        System.out.println("recovered");
+    }
+}
+```
+
+### Problem 13 — Serialize (H)
+
+```java
+class Serialize {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static String ser(N u) {
+        if (u == null) return "#";
+        return u.v + "," + ser(u.l) + "," + ser(u.r);
+    }
+    static int idx = 0;
+    static N des(String[] t) {
+        if (idx >= t.length || t[idx].equals("#")) { idx++; return null; }
+        N u = new N(Integer.parseInt(t[idx++])); u.l = des(t); u.r = des(t); return u;
+    }
+    public static void main(String[] args) { System.out.println("see day-18 demo"); }
+}
+```
+
+### Problem 14 — Morris (H)
+
+```java
+class Morris {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    public static void main(String[] args) {
+        N root = new N(1); root.l = new N(2); root.r = new N(3);
+        N cur = root;
+        while (cur != null) {
+            if (cur.l == null) { System.out.print(cur.v + " "); cur = cur.r; }
+            else {
+                N pre = cur.l;
+                while (pre.r != null && pre.r != cur) pre = pre.r;
+                if (pre.r == null) { pre.r = cur; cur = cur.l; }
+                else { pre.r = null; System.out.print(cur.v + " "); cur = cur.r; }
+            }
+        }
+    }
+}
+```
+
+### Problem 15 — MaxPath (H)
+
+```java
+class MaxPath {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static int best = Integer.MIN_VALUE;
+    static int gain(N u) { if (u == null) return 0; int l = Math.max(0, gain(u.l)), r = Math.max(0, gain(u.r)); best = Math.max(best, l + r + u.v); return u.v + Math.max(l, r); }
+    public static void main(String[] args) {
+        N root = new N(-10); root.l = new N(9); root.r = new N(20); root.r.l = new N(15); root.r.r = new N(7);
+        gain(root); System.out.println(best);
+    }
+}
+```
+

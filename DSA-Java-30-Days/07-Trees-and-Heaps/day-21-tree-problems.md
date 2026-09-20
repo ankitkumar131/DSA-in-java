@@ -370,3 +370,230 @@ Recap.
 - BFS-with-column handles views and vertical traversal cleanly.
 
 Tomorrow: **Greedy Algorithms**.
+
+
+## Solutions
+
+### Problem 1 — Height (E)
+
+```java
+class Height {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static int h(N u) { return u == null ? 0 : 1 + Math.max(h(u.l), h(u.r)); }
+    public static void main(String[] args) {
+        N root = new N(1); root.l = new N(2); root.r = new N(3); root.l.l = new N(4);
+        System.out.println(h(root));
+    }
+}
+```
+
+### Problem 2 — Balanced (E)
+
+```java
+class Balanced {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static boolean ok = true;
+    static int h(N u) { if (u == null) return 0; int l = h(u.l), r = h(u.r); if (Math.abs(l-r) > 1) ok = false; return 1 + Math.max(l, r); }
+    public static void main(String[] args) {
+        N root = new N(1); root.l = new N(2); root.r = new N(3); root.l.l = new N(4);
+        h(root); System.out.println(ok);
+    }
+}
+```
+
+### Problem 3 — Depth (E)
+
+```java
+class Depth {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static int d(N u) { return u == null ? 0 : 1 + Math.max(d(u.l), d(u.r)); }
+    public static void main(String[] args) {
+        N root = new N(1); root.l = new N(2); root.r = new N(3);
+        System.out.println(d(root));
+    }
+}
+```
+
+### Problem 4 — Same (E)
+
+```java
+class Same {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static boolean eq(N a, N b) { if (a==null&&b==null) return true; if (a==null||b==null) return false; return a.v==b.v && eq(a.l,b.l) && eq(a.r,b.r); }
+    public static void main(String[] args) {
+        N a = new N(1); a.l = new N(2);
+        N b = new N(1); b.l = new N(2);
+        System.out.println(eq(a, b));
+    }
+}
+```
+
+### Problem 5 — Invert (E)
+
+```java
+class Invert {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static N inv(N u) { if (u == null) return null; N t = u.l; u.l = inv(u.r); u.r = inv(t); return u; }
+    public static void main(String[] args) { N root = new N(1); root.l = new N(2); inv(root); System.out.println("done"); }
+}
+```
+
+### Problem 6 — Dia (M)
+
+```java
+class Dia {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static int best = 0;
+    static int d(N u) { if (u == null) return 0; int l = d(u.l), r = d(u.r); best = Math.max(best, l+r); return 1 + Math.max(l, r); }
+    public static void main(String[] args) {
+        N root = new N(1); root.l = new N(2); root.r = new N(3); root.l.l = new N(4); root.l.r = new N(5);
+        d(root); System.out.println(best);
+    }
+}
+```
+
+### Problem 7 — MPS (M)
+
+```java
+class MPS {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static int best = Integer.MIN_VALUE;
+    static int g(N u) { if (u == null) return 0; int l = Math.max(0, g(u.l)), r = Math.max(0, g(u.r)); best = Math.max(best, l+r+u.v); return u.v + Math.max(l, r); }
+    public static void main(String[] args) {
+        N root = new N(-10); root.l = new N(9); root.r = new N(20); root.r.l = new N(15); root.r.r = new N(7);
+        g(root); System.out.println(best);
+    }
+}
+```
+
+### Problem 8 — LCA (M)
+
+```java
+class LCA {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static N lca(N u, N p, N q) {
+        if (u == null || u == p || u == q) return u;
+        N L = lca(u.l, p, q), R = lca(u.r, p, q);
+        if (L != null && R != null) return u;
+        return L != null ? L : R;
+    }
+    public static void main(String[] args) {
+        N root = new N(3); root.l = new N(5); root.r = new N(1); root.l.l = new N(6); root.l.r = new N(2); root.r.l = new N(0); root.r.r = new N(8);
+        System.out.println("see day-21 demo");
+    }
+}
+```
+
+### Problem 9 — Right (M)
+
+```java
+class Right {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static void dfs(N u, int d, java.util.List<Integer> out) {
+        if (u == null) return;
+        if (d == out.size()) out.add(u.v);
+        dfs(u.r, d + 1, out); dfs(u.l, d + 1, out);
+    }
+    public static void main(String[] args) {
+        N root = new N(1); root.l = new N(2); root.r = new N(3); root.l.r = new N(5); root.r.r = new N(4);
+        java.util.List<Integer> out = new java.util.ArrayList<>(); dfs(root, 0, out); System.out.println(out);
+    }
+}
+```
+
+### Problem 10 — ValidBST (M)
+
+```java
+class ValidBST {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static boolean ok(N u, long lo, long hi) {
+        if (u == null) return true;
+        if (u.v <= lo || u.v >= hi) return false;
+        return ok(u.l, lo, u.v) && ok(u.r, u.v, hi);
+    }
+    public static void main(String[] args) {
+        N root = new N(2); root.l = new N(1); root.r = new N(3);
+        System.out.println(ok(root, Long.MIN_VALUE, Long.MAX_VALUE));
+    }
+}
+```
+
+### Problem 11 — Vertical (H)
+
+```java
+class Vertical {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static void dfs(N u, int col, java.util.Map<Integer, java.util.List<Integer>> m) {
+        if (u == null) return;
+        m.computeIfAbsent(col, k -> new java.util.ArrayList<>()).add(u.v);
+        dfs(u.l, col - 1, m); dfs(u.r, col + 1, m);
+    }
+    public static void main(String[] args) {
+        N root = new N(3); root.l = new N(9); root.r = new N(20); root.r.l = new N(15); root.r.r = new N(7);
+        java.util.Map<Integer, java.util.List<Integer>> m = new java.util.TreeMap<>();
+        dfs(root, 0, m); System.out.println(m.values());
+    }
+}
+```
+
+### Problem 12 — Ser (H)
+
+```java
+class Ser {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static String s(N u) { return u == null ? "#" : u.v + "," + s(u.l) + "," + s(u.r); }
+    static int i = 0;
+    static N d(String[] t) { if (t[i].equals("#")) { i++; return null; } N u = new N(Integer.parseInt(t[i++])); u.l = d(t); u.r = d(t); return u; }
+    public static void main(String[] args) { System.out.println("see day-21 demo"); }
+}
+```
+
+### Problem 13 — RecoverBST (H)
+
+```java
+class RecoverBST {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static N a, b, prev;
+    static void ino(N u) { if (u == null) return; ino(u.l); if (prev != null && prev.v > u.v) { if (a == null) a = prev; b = u; } prev = u; ino(u.r); }
+    public static void main(String[] args) {
+        N root = new N(3); root.l = new N(1); root.r = new N(4); root.r.l = new N(2);
+        ino(root); int t = a.v; a.v = b.v; b.v = t;
+        System.out.println("recovered");
+    }
+}
+```
+
+### Problem 14 — MaxPath (H)
+
+```java
+class MaxPath {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static int best = Integer.MIN_VALUE;
+    static int g(N u) { if (u == null) return 0; int l = Math.max(0, g(u.l)), r = Math.max(0, g(u.r)); best = Math.max(best, l+r+u.v); return u.v + Math.max(l, r); }
+    public static void main(String[] args) {
+        N root = new N(1); root.l = new N(2); root.r = new N(3);
+        g(root); System.out.println(best);
+    }
+}
+```
+
+### Problem 15 — Complete (H)
+
+```java
+class Complete {
+    static class N { int v; N l, r; N(int v) { this.v = v; } }
+    static int count(N u) {
+        int h = 0; N cur = u;
+        while (cur != null) { h++; cur = cur.l; }
+        if (Math.pow(2, h) - 1 == 0) return (int)(Math.pow(2, h) - 1);
+        // O(h) check + recursive right
+        int total = 0;
+        cur = u; int curDepth = 0;
+        while (cur != null) { curDepth++; cur = cur.r; }
+        if (curDepth == h) return (int)(Math.pow(2, h) - 1);
+        return count(u.l) + count(u.r) + 1;
+    }
+    public static void main(String[] args) { System.out.println("see day-21 demo"); }
+}
+```
+

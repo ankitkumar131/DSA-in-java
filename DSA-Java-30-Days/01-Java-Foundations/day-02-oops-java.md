@@ -824,3 +824,251 @@ So the JVM can call `MyClass.main(...)` without first creating a `MyClass` insta
 - Always override `equals` and `hashCode` together.
 
 Tomorrow: **Time and Space Complexity** — the language you'll use to evaluate every algorithm.
+
+
+## Solutions
+
+### Problem 1 — Student (E)
+
+```java
+class Student {
+    String name; int age;
+    Student(String n, int a) { name = n; age = a; }
+    public static void main(String[] args) {
+        Student s = new Student("Ankit", 25);
+        System.out.println(s.name + " " + s.age);
+    }
+}
+```
+
+### Problem 2 — Rectangle (E)
+
+```java
+class Rectangle {
+    double w, h;
+    Rectangle(double w, double h) { this.w = w; this.h = h; }
+    double area() { return w * h; }
+    public static void main(String[] args) {
+        Rectangle r = new Rectangle(3, 4);
+        System.out.println(r.area());
+    }
+}
+```
+
+### Problem 3 — Counter (E)
+
+```java
+class Counter {
+    static int count = 0;
+    Counter() { count++; }
+    public static void main(String[] args) {
+        new Counter(); new Counter(); new Counter();
+        System.out.println(Counter.count);
+    }
+}
+```
+
+### Problem 4 — BankAccount (E)
+
+```java
+class BankAccount {
+    private double balance;
+    BankAccount(double b) { balance = b; }
+    void deposit(double x) { if (x > 0) balance += x; }
+    double getBalance() { return balance; }
+    public static void main(String[] args) {
+        BankAccount a = new BankAccount(100);
+        a.deposit(50);
+        System.out.println(a.getBalance());
+    }
+}
+```
+
+### Problem 5 — Point (E)
+
+```java
+class Point {
+    double x, y;
+    Point(double x, double y) { this.x = x; this.y = y; }
+    double dist(Point o) { double dx = x-o.x, dy = y-o.y; return Math.sqrt(dx*dx + dy*dy); }
+    public static void main(String[] args) {
+        Point a = new Point(0, 0), b = new Point(3, 4);
+        System.out.println(a.dist(b));
+    }
+}
+```
+
+### Problem 6 — Box (M)
+
+```java
+class Box<T> {
+    T v;
+    Box(T v) { this.v = v; }
+    T get() { return v; }
+    public static void main(String[] args) {
+        Box<Integer> b = new Box<>(42);
+        System.out.println(b.get());
+    }
+}
+```
+
+### Problem 7 — MinMax (M)
+
+```java
+class MinMax<T extends Comparable<T>> {
+    T a, b;
+    MinMax(T a, T b) { this.a = a; this.b = b; }
+    T min() { return a.compareTo(b) <= 0 ? a : b; }
+    T max() { return a.compareTo(b) >= 0 ? a : b; }
+    public static void main(String[] args) {
+        MinMax<Integer> m = new MinMax<>(3, 7);
+        System.out.println(m.min() + " " + m.max());
+    }
+}
+```
+
+### Problem 8 — Eq (M)
+
+```java
+class Eq {
+    int x, y;
+    Eq(int x, int y) { this.x = x; this.y = y; }
+    public boolean equals(Object o) {
+        if (!(o instanceof Eq)) return false;
+        Eq e = (Eq) o;
+        return x == e.x && y == e.y;
+    }
+    public int hashCode() { return java.util.Objects.hash(x, y); }
+    public static void main(String[] args) {
+        System.out.println(new Eq(1,2).equals(new Eq(1,2)));
+    }
+}
+```
+
+### Problem 9 — Animal (M)
+
+```java
+class Animal { String name; Animal(String n) { name = n; } void sound() {} }
+class Dog extends Animal { Dog() { super("Dog"); } void sound() { System.out.println("woof"); } }
+class Cat extends Animal { Cat() { super("Cat"); } void sound() { System.out.println("meow"); } }
+class PolyDemo {
+    public static void main(String[] args) {
+        Animal[] a = { new Dog(), new Cat() };
+        for (Animal x : a) x.sound();
+    }
+}
+```
+
+### Problem 10 — Problem 10 (M)
+
+```java
+interface Shape { double area(); }
+class Circle implements Shape { double r; Circle(double r) { this.r = r; }
+    public double area() { return Math.PI * r * r; } }
+class Square implements Shape { double s; Square(double s) { this.s = s; }
+    public double area() { return s * s; } }
+class ShapeDemo {
+    public static void main(String[] args) {
+        Shape[] s = { new Circle(2), new Square(3) };
+        for (Shape x : s) System.out.println(x.area());
+    }
+}
+```
+
+### Problem 11 — LLNode (H)
+
+```java
+class LLNode {
+    int val; LLNode next;
+    LLNode(int v) { val = v; }
+    public static void main(String[] args) {
+        LLNode head = new LLNode(1);
+        head.next = new LLNode(2);
+        head.next.next = new LLNode(3);
+        for (LLNode c = head; c != null; c = c.next) System.out.print(c.val + " ");
+    }
+}
+```
+
+### Problem 12 — MinStack (H)
+
+```java
+class MinStack {
+    java.util.Deque<Integer> st = new java.util.ArrayDeque<>();
+    java.util.Deque<Integer> mins = new java.util.ArrayDeque<>();
+    void push(int x) {
+        st.push(x);
+        if (mins.isEmpty() || x <= mins.peek()) mins.push(x);
+    }
+    int pop() { int v = st.pop(); if (v == mins.peek()) mins.pop(); return v; }
+    int min() { return mins.peek(); }
+    public static void main(String[] args) {
+        MinStack s = new MinStack();
+        s.push(3); s.push(1); s.push(5);
+        System.out.println(s.min());
+    }
+}
+```
+
+### Problem 13 — LRUCache (H)
+
+```java
+class LRUCache {
+    class Node { int k, v; Node p, n; Node(int k, int v) { this.k=k; this.v=v; } }
+    java.util.Map<Integer, Node> m = new java.util.HashMap<>();
+    Node head = new Node(0,0), tail = new Node(0,0); int cap;
+    LRUCache(int c) { cap=c; head.n=tail; tail.p=head; }
+    int get(int k) {
+        if (!m.containsKey(k)) return -1;
+        Node n = m.get(k); rm(n); add(n); return n.v;
+    }
+    void put(int k, int v) {
+        if (m.containsKey(k)) { Node n = m.get(k); n.v=v; rm(n); add(n); return; }
+        Node n = new Node(k, v); m.put(k, n); add(n);
+        if (m.size() > cap) { Node r = tail.p; rm(r); m.remove(r.k); }
+    }
+    void rm(Node n) { n.p.n = n.n; n.n.p = n.p; }
+    void add(Node n) { n.n = head.n; n.p = head; head.n.p = n; head.n = n; }
+    public static void main(String[] args) {
+        LRUCache l = new LRUCache(2);
+        l.put(1, 10); l.put(2, 20);
+        System.out.println(l.get(1));
+    }
+}
+```
+
+### Problem 14 — Fraction (H)
+
+```java
+class Fraction {
+    int n, d;
+    Fraction(int n, int d) { this.n = n; this.d = d; normalize(); }
+    void normalize() { int g = gcd(Math.abs(n), Math.abs(d)); n/=g; d/=g; }
+    static int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
+    public String toString() { return n + "/" + d; }
+    public static void main(String[] args) {
+        System.out.println(new Fraction(4, 8));
+    }
+}
+```
+
+### Problem 15 — TrieNode (H)
+
+```java
+class TrieNode {
+    TrieNode[] children = new TrieNode[26];
+    boolean end;
+    public static void main(String[] args) {
+        TrieNode root = new TrieNode();
+        TrieNode cur = root;
+        for (char c : "cat".toCharArray()) {
+            int i = c - 'a';
+            if (cur.children[i] == null) cur.children[i] = new TrieNode();
+            cur = cur.children[i];
+        }
+        cur.end = true;
+        System.out.println("inserted");
+    }
+}
+```
+

@@ -325,3 +325,265 @@ Primitives: speed (unstable dual-pivot quick). Objects: stability needed (TimSor
 - Java sorts: dual-pivot quick for primitives, TimSort for objects.
 
 Tomorrow: **Recursion**.
+
+
+## Solutions
+
+### Problem 1 — InsertionSort (E)
+
+```java
+class InsertionSort {
+    static void sort(int[] a) {
+        for (int i = 1; i < a.length; i++) {
+            int k = a[i], j = i - 1;
+            while (j >= 0 && a[j] > k) { a[j+1] = a[j]; j--; }
+            a[j+1] = k;
+        }
+    }
+    public static void main(String[] args) {
+        int[] a = {5,2,8,1,3}; sort(a);
+        System.out.println(java.util.Arrays.toString(a));
+    }
+}
+```
+
+### Problem 2 — AbsSort (E)
+
+```java
+class AbsSort {
+    public static void main(String[] args) {
+        Integer[] a = {5,-3,2,-8,1};
+        java.util.Arrays.sort(a, (x,y) -> Integer.compare(Math.abs(x), Math.abs(y)));
+        System.out.println(java.util.Arrays.toString(a));
+    }
+}
+```
+
+### Problem 3 — SqSort (E)
+
+```java
+class SqSort {
+    public static void main(String[] args) {
+        int[] a = {-4,-1,0,3,10}; int n = a.length;
+        int[] out = new int[n]; int l = 0, r = n - 1, k = n - 1;
+        while (l <= r) {
+            int ls = a[l]*a[l], rs = a[r]*a[r];
+            if (ls > rs) { out[k--] = ls; l++; } else { out[k--] = rs; r--; }
+        }
+        System.out.println(java.util.Arrays.toString(out));
+    }
+}
+```
+
+### Problem 4 — HeightSort (E)
+
+```java
+class HeightSort {
+    public static void main(String[] args) {
+        String[] names = {"Alice","Bob","Charlie"};
+        int[] h = {155,180,170};
+        Integer[] idx = {0,1,2};
+        java.util.Arrays.sort(idx, (i,j) -> Integer.compare(h[i], h[j]));
+        for (int i : idx) System.out.println(names[i] + " " + h[i]);
+    }
+}
+```
+
+### Problem 5 — Bubble (E)
+
+```java
+class Bubble {
+    static void sort(int[] a) {
+        int n = a.length;
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n - i - 1; j++)
+                if (a[j] > a[j+1]) { int t = a[j]; a[j] = a[j+1]; a[j+1] = t; }
+    }
+    public static void main(String[] args) {
+        int[] a = {5,2,8,1,3}; sort(a);
+        System.out.println(java.util.Arrays.toString(a));
+    }
+}
+```
+
+### Problem 6 — MergeIntervals (M)
+
+```java
+class MergeIntervals {
+    public static void main(String[] args) {
+        int[][] iv = {{1,3},{2,6},{8,10},{15,18}};
+        java.util.Arrays.sort(iv, (a,b) -> Integer.compare(a[0], b[0]));
+        java.util.List<int[]> out = new java.util.ArrayList<>();
+        int[] cur = iv[0]; out.add(cur);
+        for (int[] x : iv) {
+            if (x[0] <= cur[1]) cur[1] = Math.max(cur[1], x[1]);
+            else { cur = x; out.add(cur); }
+        }
+        System.out.println(out);
+    }
+}
+```
+
+### Problem 7 — SortColorsCount (M)
+
+```java
+class SortColorsCount {
+    public static void main(String[] args) {
+        int[] a = {2,0,2,1,1,0};
+        int c0 = 0, c1 = 0, c2 = 0;
+        for (int x : a) if (x==0) c0++; else if (x==1) c1++; else c2++;
+        int i = 0;
+        while (c0-- > 0) a[i++] = 0;
+        while (c1-- > 0) a[i++] = 1;
+        while (c2-- > 0) a[i++] = 2;
+        System.out.println(java.util.Arrays.toString(a));
+    }
+}
+```
+
+### Problem 8 — ParitySort (M)
+
+```java
+class ParitySort {
+    public static void main(String[] args) {
+        int[] a = {3,1,2,4};
+        int j = 0;
+        for (int i = 0; i < a.length; i++) if (a[i] % 2 == 0) { int t = a[i]; a[i] = a[j]; a[j++] = t; }
+        System.out.println(java.util.Arrays.toString(a));
+    }
+}
+```
+
+### Problem 9 — TopK (M)
+
+```java
+class TopK {
+    public static void main(String[] args) {
+        int[] a = {1,1,1,2,2,3}; int k = 2;
+        java.util.Map<Integer,Integer> m = new java.util.HashMap<>();
+        for (int x : a) m.merge(x, 1, Integer::sum);
+        java.util.PriorityQueue<int[]> pq = new java.util.PriorityQueue<>((x,y) -> x[0]-y[0]);
+        for (var e : m.entrySet()) {
+            pq.offer(new int[]{e.getValue(), e.getKey()});
+            if (pq.size() > k) pq.poll();
+        }
+        java.util.List<Integer> out = new java.util.ArrayList<>();
+        while (!pq.isEmpty()) out.add(pq.poll()[1]);
+        System.out.println(out);
+    }
+}
+```
+
+### Problem 10 — KthLargest (M)
+
+```java
+class KthLargest {
+    static int qs(int[] a, int k) {
+        // partial sort: sort and pick — O(n log n). Replace with quickselect for O(n) avg.
+        java.util.Arrays.sort(a);
+        return a[a.length - k];
+    }
+    public static void main(String[] args) { System.out.println(qs(new int[]{3,2,1,5,6,4}, 2)); }
+}
+```
+
+### Problem 11 — MergeSort (H)
+
+```java
+class MergeSort {
+    static void sort(int[] a) {
+        if (a.length < 2) return;
+        int m = a.length / 2;
+        int[] l = java.util.Arrays.copyOfRange(a, 0, m);
+        int[] r = java.util.Arrays.copyOfRange(a, m, a.length);
+        sort(l); sort(r);
+        int i=0,j=0,k=0;
+        while (i<l.length && j<r.length) a[k++] = l[i]<=r[j] ? l[i++] : r[j++];
+        while (i<l.length) a[k++] = l[i++];
+        while (j<r.length) a[k++] = r[j++];
+    }
+    public static void main(String[] args) {
+        int[] a = {5,2,8,1,3}; sort(a);
+        System.out.println(java.util.Arrays.toString(a));
+    }
+}
+```
+
+### Problem 12 — Inv (H)
+
+```java
+class Inv {
+    static long sort(int[] a, int l, int r) {
+        if (r - l <= 1) return 0;
+        int m = (l + r) / 2;
+        long inv = sort(a, l, m) + sort(a, m, r);
+        int[] merged = new int[r - l]; int i = l, j = m, k = 0;
+        while (i < m && j < r) {
+            if (a[i] <= a[j]) merged[k++] = a[i++];
+            else { merged[k++] = a[j++]; inv += m - i; }
+        }
+        while (i < m) merged[k++] = a[i++];
+        while (j < r) merged[k++] = a[j++];
+        System.arraycopy(merged, 0, a, l, r - l);
+        return inv;
+    }
+    public static void main(String[] args) { System.out.println(sort(new int[]{2,4,1,3,5}, 0, 5)); }
+}
+```
+
+### Problem 13 — LargestNum (H)
+
+```java
+class LargestNum {
+    public static void main(String[] args) {
+        int[] a = {10,2};
+        String[] s = new String[a.length];
+        for (int i = 0; i < a.length; i++) s[i] = String.valueOf(a[i]);
+        java.util.Arrays.sort(s, (x,y) -> (y+x).compareTo(x+y));
+        StringBuilder sb = new StringBuilder();
+        for (String t : s) sb.append(t);
+        System.out.println(sb);
+    }
+}
+```
+
+### Problem 14 — SortList (H)
+
+```java
+class SortList {
+    static class Node { int v; Node n; Node(int v) { this.v = v; } }
+    static Node sort(Node h) {
+        if (h == null || h.n == null) return h;
+        Node slow = h, fast = h.n;
+        while (fast != null && fast.n != null) { slow = slow.n; fast = fast.n.n; }
+        Node mid = slow.n; slow.n = null;
+        return merge(sort(h), sort(mid));
+    }
+    static Node merge(Node a, Node b) {
+        Node d = new Node(0), t = d;
+        while (a != null && b != null) { if (a.v <= b.v) { t.n = a; a = a.n; } else { t.n = b; b = b.n; } t = t.n; }
+        t.n = a == null ? b : a; return d.n;
+    }
+    public static void main(String[] args) {
+        Node h = new Node(4); h.n = new Node(2); h.n.n = new Node(1); h.n.n.n = new Node(3);
+        for (Node c = sort(h); c != null; c = c.n) System.out.print(c.v + " ");
+    }
+}
+```
+
+### Problem 15 — Wiggle (H)
+
+```java
+class Wiggle {
+    public static void main(String[] args) {
+        int[] a = {1,5,1,1,6,4};
+        java.util.Arrays.sort(a); // simple O(n log n) wiggle II via virtual index
+        int n = a.length; int[] out = new int[n];
+        int i = 0, j = n - 1, k = 0;
+        for (; i < j; i++, j--) { out[k++] = a[i]; out[k++] = a[j]; }
+        if (i == j) out[k] = a[i];
+        System.out.println(java.util.Arrays.toString(out));
+    }
+}
+```
+

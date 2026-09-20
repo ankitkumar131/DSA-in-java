@@ -259,3 +259,238 @@ Standard.
 - Often space-optimisable to O(1) or O(n).
 
 Tomorrow: **DP Patterns**.
+
+
+## Solutions
+
+### Problem 1 — Fib (E)
+
+```java
+class Fib {
+    static long[] dp;
+    static long fib(int n) { if (n <= 1) return n; if (dp[n] != 0) return dp[n]; return dp[n] = fib(n - 1) + fib(n - 2); }
+    public static void main(String[] args) { dp = new long[40]; System.out.println(fib(30)); }
+}
+```
+
+### Problem 2 — Climb (E)
+
+```java
+class Climb {
+    public static void main(String[] args) {
+        int n = 5; int[] dp = new int[n + 1]; dp[0] = 1;
+        for (int i = 1; i <= n; i++) for (int j = 1; j <= 2 && j <= i; j++) dp[i] += dp[i - j];
+        System.out.println(dp[n]);
+    }
+}
+```
+
+### Problem 3 — MinCost (E)
+
+```java
+class MinCost {
+    public static void main(String[] args) {
+        int[][] c = {{1,3,1},{1,5,1},{4,2,1}};
+        int m = c.length, n = c[0].length;
+        int[][] dp = new int[m][n]; dp[0][0] = c[0][0];
+        for (int j = 1; j < n; j++) dp[0][j] = dp[0][j-1] + c[0][j];
+        for (int i = 1; i < m; i++) for (int j = 0; j < n; j++) {
+            dp[i][j] = c[i][j] + Math.min(dp[i-1][j], (j > 0 ? dp[i-1][j-1] : Integer.MAX_VALUE));
+            if (j + 1 < n) dp[i][j] = Math.min(dp[i][j], c[i][j] + Math.min(dp[i-1][j], (j > 0 ? dp[i-1][j-1] : Integer.MAX_VALUE)));
+            else dp[i][j] = Math.min(dp[i][j], c[i][j] + dp[i-1][j]);
+        }
+        System.out.println(dp[m-1][n-1]);
+    }
+}
+```
+
+### Problem 4 — Rob (E)
+
+```java
+class Rob {
+    public static void main(String[] args) {
+        int[] a = {2,7,9,3,1};
+        int n = a.length;
+        if (n == 0) { System.out.println(0); return; }
+        if (n == 1) { System.out.println(a[0]); return; }
+        int[] dp = new int[n]; dp[0] = a[0]; dp[1] = Math.max(a[0], a[1]);
+        for (int i = 2; i < n; i++) dp[i] = Math.max(dp[i-1], dp[i-2] + a[i]);
+        System.out.println(dp[n-1]);
+    }
+}
+```
+
+### Problem 5 — Pascal (E)
+
+```java
+class Pascal {
+    public static void main(String[] args) {
+        int n = 5;
+        int[][] dp = new int[n][];
+        for (int i = 0; i < n; i++) { dp[i] = new int[i+1]; dp[i][0] = dp[i][i] = 1; for (int j = 1; j < i; j++) dp[i][j] = dp[i-1][j-1] + dp[i-1][j]; }
+        for (int[] row : dp) System.out.println(java.util.Arrays.toString(row));
+    }
+}
+```
+
+### Problem 6 — CoinChg (M)
+
+```java
+class CoinChg {
+    public static void main(String[] args) {
+        int[] c = {1,2,5}; int a = 11;
+        int[] dp = new int[a + 1]; dp[0] = 1;
+        for (int x : c) for (int i = x; i <= a; i++) dp[i] += dp[i-x];
+        System.out.println(dp[a]);
+    }
+}
+```
+
+### Problem 7 — CoinChg2 (M)
+
+```java
+class CoinChg2 {
+    public static void main(String[] args) {
+        int[] c = {1,2,5}; int a = 11;
+        int[] dp = new int[a + 1]; dp[0] = 1;
+        for (int i = 1; i <= a; i++) for (int x : c) if (i >= x) dp[i] += dp[i - x];
+        System.out.println(dp[a]);
+    }
+}
+```
+
+### Problem 8 — Knap01 (M)
+
+```java
+class Knap01 {
+    public static void main(String[] args) {
+        int[] w = {1,2,3}; int[] v = {6,10,12}; int W = 5;
+        int[] dp = new int[W + 1];
+        for (int i = 0; i < w.length; i++) for (int j = W; j >= w[i]; j--) dp[j] = Math.max(dp[j], dp[j - w[i]] + v[i]);
+        System.out.println(dp[W]);
+    }
+}
+```
+
+### Problem 9 — UniquePaths (M)
+
+```java
+class UniquePaths {
+    public static void main(String[] args) {
+        int m = 3, n = 7;
+        int[] dp = new int[n];
+        java.util.Arrays.fill(dp, 1);
+        for (int i = 1; i < m; i++) for (int j = 1; j < n; j++) dp[j] += dp[j-1];
+        System.out.println(dp[n-1]);
+    }
+}
+```
+
+### Problem 10 — DecodeWays (M)
+
+```java
+class DecodeWays {
+    public static void main(String[] args) {
+        String s = "226";
+        int n = s.length();
+        if (n == 0) { System.out.println(0); return; }
+        int[] dp = new int[n + 1]; dp[0] = 1; dp[1] = (s.charAt(0) != '0') ? 1 : 0;
+        for (int i = 2; i <= n; i++) {
+            if (s.charAt(i-1) != '0') dp[i] += dp[i-1];
+            int two = (s.charAt(i-2) - '0') * 10 + (s.charAt(i-1) - '0');
+            if (two >= 10 && two <= 26) dp[i] += dp[i-2];
+        }
+        System.out.println(dp[n]);
+    }
+}
+```
+
+### Problem 11 — Edit2 (H)
+
+```java
+class Edit2 {
+    public static void main(String[] args) {
+        String a = "horse", b = "ros"; int m = a.length(), n = b.length();
+        int[] dp = new int[n + 1];
+        for (int j = 0; j <= n; j++) dp[j] = j;
+        for (int i = 1; i <= m; i++) {
+            int[] ndp = new int[n + 1]; ndp[0] = i;
+            for (int j = 1; j <= n; j++)
+                ndp[j] = a.charAt(i-1) == b.charAt(j-1) ? dp[j-1] : 1 + Math.min(dp[j-1], Math.min(dp[j], ndp[j-1]));
+            dp = ndp;
+        }
+        System.out.println(dp[n]);
+    }
+}
+```
+
+### Problem 12 — LCS2 (H)
+
+```java
+class LCS2 {
+    public static void main(String[] args) {
+        String a = "abcde", b = "ace"; int m = a.length(), n = b.length();
+        int[] dp = new int[n + 1];
+        for (int i = 1; i <= m; i++) {
+            int[] ndp = new int[n + 1];
+            for (int j = 1; j <= n; j++) ndp[j] = a.charAt(i-1) == b.charAt(j-1) ? dp[j-1] + 1 : Math.max(dp[j], ndp[j-1]);
+            dp = ndp;
+        }
+        System.out.println(dp[n]);
+    }
+}
+```
+
+### Problem 13 — LIS (H)
+
+```java
+class LIS {
+    public static void main(String[] args) {
+        int[] a = {10,9,2,5,3,7,101,18};
+        int n = a.length;
+        int[] dp = new int[n];
+        int ans = 0;
+        for (int i = 0; i < n; i++) { dp[i] = 1; for (int j = 0; j < i; j++) if (a[j] < a[i]) dp[i] = Math.max(dp[i], dp[j] + 1); ans = Math.max(ans, dp[i]); }
+        System.out.println(ans);
+    }
+}
+```
+
+### Problem 14 — MatrixChain (H)
+
+```java
+class MatrixChain {
+    public static void main(String[] args) {
+        int[] d = {10,30,5,60}; int n = d.length - 1;
+        int[][] dp = new int[n][n];
+        for (int len = 2; len <= n; len++) for (int i = 0; i <= n - len; i++) {
+            int j = i + len - 1; dp[i][j] = Integer.MAX_VALUE;
+            for (int k = i; k < j; k++) dp[i][j] = Math.min(dp[i][j], dp[i][k] + dp[k+1][j] + d[i] * d[k+1] * d[j+1]);
+        }
+        System.out.println(dp[0][n-1]);
+    }
+}
+```
+
+### Problem 15 — Burst (H)
+
+```java
+class Burst {
+    public static void main(String[] args) {
+        int[] a = {3,1,5,8};
+        int n = a.length;
+        int[][] dp = new int[n][n];
+        for (int len = 1; len <= n; len++) for (int i = 0; i <= n - len; i++) {
+            int j = i + len - 1;
+            for (int k = i; k <= j; k++) {
+                int left = (k > i) ? dp[i][k-1] : 0;
+                int right = (k < j) ? dp[k+1][j] : 0;
+                int val = (i == 0 ? 1 : a[i-1]) * a[k] * (j == n - 1 ? 1 : a[j+1]);
+                dp[i][j] = Math.max(dp[i][j], left + right + val);
+            }
+        }
+        System.out.println(dp[0][n-1]);
+    }
+}
+```
+

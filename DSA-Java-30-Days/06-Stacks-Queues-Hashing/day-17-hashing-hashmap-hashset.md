@@ -296,3 +296,281 @@ Full implementation.
 - Always know the worst case: O(n).
 
 Tomorrow: **Binary Trees**.
+
+
+## Solutions
+
+### Problem 1 — TwoSum (E)
+
+```java
+class TwoSum {
+    public static void main(String[] args) {
+        int[] a = {2,7,11,15}; int t = 9;
+        java.util.Map<Integer,Integer> m = new java.util.HashMap<>();
+        for (int i = 0; i < a.length; i++) {
+            int need = t - a[i];
+            if (m.containsKey(need)) { System.out.println(m.get(need) + " " + i); return; }
+            m.put(a[i], i);
+        }
+    }
+}
+```
+
+### Problem 2 — Dup (E)
+
+```java
+class Dup {
+    public static void main(String[] args) {
+        int[] a = {1,2,3,1};
+        java.util.Set<Integer> s = new java.util.HashSet<>();
+        boolean dup = false;
+        for (int x : a) if (!s.add(x)) { dup = true; break; }
+        System.out.println(dup);
+    }
+}
+```
+
+### Problem 3 — Inter (E)
+
+```java
+class Inter {
+    public static void main(String[] args) {
+        int[] a = {1,2,2,1}, b = {2,2};
+        java.util.Set<Integer> s = new java.util.HashSet<>();
+        for (int x : a) s.add(x);
+        java.util.Set<Integer> r = new java.util.HashSet<>();
+        for (int x : b) if (s.contains(x)) r.add(x);
+        System.out.println(r);
+    }
+}
+```
+
+### Problem 4 — FU (E)
+
+```java
+class FU {
+    public static void main(String[] args) {
+        String s = "loveleetcode";
+        java.util.Map<Character,Integer> m = new java.util.LinkedHashMap<>();
+        for (char c : s.toCharArray()) m.merge(c, 1, Integer::sum);
+        char ans = '_';
+        for (var e : m.entrySet()) if (e.getValue() == 1) { ans = e.getKey(); break; }
+        System.out.println(ans);
+    }
+}
+```
+
+### Problem 5 — Anag (E)
+
+```java
+class Anag {
+    static boolean isAnag(String a, String b) {
+        int[] c = new int[26];
+        for (char ch : a.toCharArray()) c[ch-'a']++;
+        for (char ch : b.toCharArray()) c[ch-'a']--;
+        for (int x : c) if (x != 0) return false;
+        return true;
+    }
+    public static void main(String[] args) { System.out.println(isAnag("anagram","nagaram")); }
+}
+```
+
+### Problem 6 — Group (M)
+
+```java
+class Group {
+    public static void main(String[] args) {
+        String[] s = {"eat","tea","tan","ate","nat","bat"};
+        java.util.Map<String, java.util.List<String>> m = new java.util.HashMap<>();
+        for (String w : s) {
+            char[] c = w.toCharArray(); java.util.Arrays.sort(c);
+            m.computeIfAbsent(new String(c), k -> new java.util.ArrayList<>()).add(w);
+        }
+        System.out.println(new java.util.ArrayList<>(m.values()));
+    }
+}
+```
+
+### Problem 7 — TopK (M)
+
+```java
+class TopK {
+    public static void main(String[] args) {
+        int[] a = {1,1,1,2,2,3}; int k = 2;
+        java.util.Map<Integer,Integer> m = new java.util.HashMap<>();
+        for (int x : a) m.merge(x, 1, Integer::sum);
+        java.util.PriorityQueue<int[]> pq = new java.util.PriorityQueue<>((x,y) -> x[0]-y[0]);
+        for (var e : m.entrySet()) { pq.offer(new int[]{e.getValue(), e.getKey()}); if (pq.size() > k) pq.poll(); }
+        java.util.List<Integer> out = new java.util.ArrayList<>();
+        while (!pq.isEmpty()) out.add(pq.poll()[1]);
+        System.out.println(out);
+    }
+}
+```
+
+### Problem 8 — LCS (M)
+
+```java
+class LCS {
+    public static void main(String[] args) {
+        int[] a = {100,4,200,1,3,2};
+        java.util.Set<Integer> s = new java.util.HashSet<>();
+        for (int x : a) s.add(x);
+        int best = 0;
+        for (int x : s) {
+            if (!s.contains(x - 1)) {
+                int cur = x, len = 0;
+                while (s.contains(cur)) { cur++; len++; }
+                best = Math.max(best, len);
+            }
+        }
+        System.out.println(best);
+    }
+}
+```
+
+### Problem 9 — SumK (M)
+
+```java
+class SumK {
+    public static void main(String[] args) {
+        int[] a = {1,1,1}; int k = 2;
+        java.util.Map<Integer,Integer> m = new java.util.HashMap<>(); m.put(0,1);
+        int s = 0, count = 0;
+        for (int x : a) { s += x; count += m.getOrDefault(s-k, 0); m.merge(s, 1, Integer::sum); }
+        System.out.println(count);
+    }
+}
+```
+
+### Problem 10 — Four4Sum (M)
+
+```java
+class Four4Sum {
+    public static void main(String[] args) {
+        int[] a = {1,2}, b = {-2,-1}, c = {-1,2}, d = {0,2};
+        int n = a.length, count = 0;
+        java.util.Map<Integer,Integer> ab = new java.util.HashMap<>();
+        for (int x : a) for (int y : b) ab.merge(x+y, 1, Integer::sum);
+        for (int x : c) for (int y : d) count += ab.getOrDefault(-(x+y), 0);
+        System.out.println(count);
+    }
+}
+```
+
+### Problem 11 — LRU (H)
+
+```java
+class LRU {
+    static class Node { int k,v; Node p,n; Node(int k,int v){this.k=k;this.v=v;} }
+    java.util.Map<Integer,Node> m = new java.util.HashMap<>();
+    Node head = new Node(0,0), tail = new Node(0,0); int cap;
+    LRU(int c) { cap=c; head.n=tail; tail.p=head; }
+    int get(int k) { if(!m.containsKey(k)) return -1; Node n=m.get(k); rm(n); add(n); return n.v; }
+    void put(int k,int v){ if(m.containsKey(k)){Node n=m.get(k); n.v=v; rm(n); add(n); return;} Node n=new Node(k,v); m.put(k,n); add(n); if(m.size()>cap){Node r=tail.p; rm(r); m.remove(r.k);} }
+    void rm(Node n){ n.p.n=n.n; n.n.p=n.p; }
+    void add(Node n){ n.n=head.n; n.p=head; head.n.p=n; head.n=n; }
+    public static void main(String[] args) {
+        LRU l = new LRU(2); l.put(1,1); l.put(2,2); System.out.println(l.get(1));
+    }
+}
+```
+
+### Problem 12 — Rand (H)
+
+```java
+class Rand {
+    java.util.Map<Integer,Integer> m = new java.util.HashMap<>();
+    java.util.List<Integer> l = new java.util.ArrayList<>();
+    java.util.Random r = new java.util.Random();
+    boolean insert(int v) { if (m.containsKey(v)) return false; m.put(v, l.size()); l.add(v); return true; }
+    boolean remove(int v) { if (!m.containsKey(v)) return false; int i = m.get(v); int last = l.get(l.size()-1); l.set(i, last); m.put(last, i); l.remove(l.size()-1); m.remove(v); return true; }
+    int rand() { return l.get(r.nextInt(l.size())); }
+    public static void main(String[] args) {
+        Rand s = new Rand();
+        s.insert(1); s.insert(2); s.insert(3);
+        System.out.println(s.rand());
+    }
+}
+```
+
+### Problem 13 — WordPat2 (H)
+
+```java
+class WordPat2 {
+    static boolean match(String s, String p) {
+        return bt(s, p, 0, 0, new java.util.HashMap<>(), new java.util.HashSet<>());
+    }
+    static boolean bt(String s, String p, int i, int j, java.util.Map<Character,String> m, java.util.Set<String> used) {
+        if (i == s.length() && j == p.length()) return true;
+        if (i == s.length() || j == p.length()) return false;
+        char c = p.charAt(j);
+        if (m.containsKey(c)) {
+            String w = m.get(c);
+            if (!s.startsWith(w, i)) return false;
+            return bt(s, p, i + w.length(), j + 1, m, used);
+        }
+        for (int end = i + 1; end <= s.length(); end++) {
+            String w = s.substring(i, end);
+            if (used.contains(w)) continue;
+            m.put(c, w); used.add(w);
+            if (bt(s, p, end, j + 1, m, used)) return true;
+            m.remove(c); used.remove(w);
+        }
+        return false;
+    }
+    public static void main(String[] args) { System.out.println(match("abab", "xyyx")); }
+}
+```
+
+### Problem 14 — MinWin3 (H)
+
+```java
+class MinWin3 {
+    public static void main(String[] args) {
+        String s = "a", t = "a";
+        java.util.Map<Character,Integer> need = new java.util.HashMap<>();
+        for (char c : t.toCharArray()) need.merge(c, 1, Integer::sum);
+        java.util.Map<Character,Integer> have = new java.util.HashMap<>();
+        int lo = 0, formed = 0, best = Integer.MAX_VALUE, bestLo = 0;
+        for (int hi = 0; hi < s.length(); hi++) {
+            char c = s.charAt(hi);
+            have.merge(c, 1, Integer::sum);
+            if (need.containsKey(c) && have.get(c).intValue() == need.get(c).intValue()) formed++;
+            while (formed == need.size()) {
+                if (hi-lo+1 < best) { best = hi-lo+1; bestLo = lo; }
+                char cl = s.charAt(lo++);
+                if (need.containsKey(cl) && have.get(cl).intValue() == need.get(cl).intValue()) formed--;
+                have.merge(cl, -1, Integer::sum);
+            }
+        }
+        System.out.println(best == Integer.MAX_VALUE ? "" : s.substring(bestLo, bestLo+best));
+    }
+}
+```
+
+### Problem 15 — ConcatWords (H)
+
+```java
+class ConcatWords {
+    public static void main(String[] args) {
+        String s = "barfoothefoobarman"; String[] words = {"foo","bar","the"};
+        int wl = words[0].length(), n = words.length;
+        java.util.Map<String,Integer> need = new java.util.HashMap<>();
+        for (String w : words) need.merge(w, 1, Integer::sum);
+        java.util.List<Integer> res = new java.util.ArrayList<>();
+        for (int off = 0; off < wl; off++) {
+            java.util.Map<String,Integer> have = new java.util.HashMap<>();
+            for (int i = off, j = off; j + wl <= s.length(); j += wl) {
+                String w = s.substring(j, j + wl);
+                have.merge(w, 1, Integer::sum);
+                int cnt = (j - i) / wl + 1;
+                if (cnt > n) { String out = s.substring(i, i + wl); have.merge(out, -1, Integer::sum); i += wl; }
+                if (cnt == n && have.equals(need)) res.add(i);
+            }
+        }
+        System.out.println(res);
+    }
+}
+```
+

@@ -340,3 +340,272 @@ Each node is visited and re-pointed exactly once.
 - nth-from-end: advance by n then walk together.
 
 Tomorrow: **Advanced Linked Lists** — doubly, circular, Floyd, group reverse.
+
+
+## Solutions
+
+### Problem 1 — PrintLL (E)
+
+```java
+class PrintLL {
+    static class N { int v; N n; N(int v) { this.v = v; } }
+    public static void main(String[] args) {
+        N h = new N(1); h.n = new N(2); h.n.n = new N(3);
+        for (N c = h; c != null; c = c.n) System.out.print(c.v + " ");
+    }
+}
+```
+
+### Problem 2 — LenLL (E)
+
+```java
+class LenLL {
+    static class N { int v; N n; N(int v) { this.v = v; } }
+    static int len(N h) { return h == null ? 0 : 1 + len(h.n); }
+    public static void main(String[] args) {
+        N h = new N(1); h.n = new N(2); h.n.n = new N(3);
+        System.out.println(len(h));
+    }
+}
+```
+
+### Problem 3 — SearchLL (E)
+
+```java
+class SearchLL {
+    static class N { int v; N n; N(int v) { this.v = v; } }
+    public static void main(String[] args) {
+        N h = new N(1); h.n = new N(2); h.n.n = new N(3);
+        int target = 2; N c = h;
+        while (c != null && c.v != target) c = c.n;
+        System.out.println(c != null);
+    }
+}
+```
+
+### Problem 4 — Prepend (E)
+
+```java
+class Prepend {
+    static class N { int v; N n; N(int v) { this.v = v; } }
+    public static void main(String[] args) {
+        N h = new N(2); h.n = new N(3);
+        N n = new N(1); n.n = h;
+        for (N c = n; c != null; c = c.n) System.out.print(c.v + " ");
+    }
+}
+```
+
+### Problem 5 — DelHead (E)
+
+```java
+class DelHead {
+    static class N { int v; N n; N(int v) { this.v = v; } }
+    public static void main(String[] args) {
+        N h = new N(1); h.n = new N(2); h.n.n = new N(3);
+        h = h.n;
+        for (N c = h; c != null; c = c.n) System.out.print(c.v + " ");
+    }
+}
+```
+
+### Problem 6 — RevLL (M)
+
+```java
+class RevLL {
+    static class N { int v; N n; N(int v) { this.v = v; } }
+    static N rev(N h) {
+        N prev = null, cur = h;
+        while (cur != null) { N nxt = cur.n; cur.n = prev; prev = cur; cur = nxt; }
+        return prev;
+    }
+    public static void main(String[] args) {
+        N h = new N(1); h.n = new N(2); h.n.n = new N(3);
+        for (N c = rev(h); c != null; c = c.n) System.out.print(c.v + " ");
+    }
+}
+```
+
+### Problem 7 — MidLL (M)
+
+```java
+class MidLL {
+    static class N { int v; N n; N(int v) { this.v = v; } }
+    static N mid(N h) {
+        N s = h, f = h;
+        while (f != null && f.n != null) { s = s.n; f = f.n.n; }
+        return s;
+    }
+    public static void main(String[] args) {
+        N h = new N(1); h.n = new N(2); h.n.n = new N(3); h.n.n.n = new N(4);
+        System.out.println(mid(h).v);
+    }
+}
+```
+
+### Problem 8 — CycleLL (M)
+
+```java
+class CycleLL {
+    static class N { int v; N n; N(int v) { this.v = v; } }
+    static boolean has(N h) {
+        N s = h, f = h;
+        while (f != null && f.n != null) {
+            s = s.n; f = f.n.n;
+            if (s == f) return true;
+        }
+        return false;
+    }
+    public static void main(String[] args) {
+        N h = new N(1); h.n = new N(2); h.n.n = h;
+        System.out.println(has(h));
+    }
+}
+```
+
+### Problem 9 — NthEnd (M)
+
+```java
+class NthEnd {
+    static class N { int v; N n; N(int v) { this.v = v; } }
+    static N nth(N h, int k) {
+        N fast = h;
+        for (int i = 0; i < k && fast != null; i++) fast = fast.n;
+        if (fast == null) return null;
+        N slow = h;
+        while (fast.n != null) { slow = slow.n; fast = fast.n; }
+        return slow;
+    }
+    public static void main(String[] args) {
+        N h = new N(1); h.n = new N(2); h.n.n = new N(3); h.n.n.n = new N(4);
+        System.out.println(nth(h, 2).v);   // 3
+    }
+}
+```
+
+### Problem 10 — DedupLL (M)
+
+```java
+class DedupLL {
+    static class N { int v; N n; N(int v) { this.v = v; } }
+    static N dedup(N h) {
+        N cur = h;
+        while (cur != null && cur.n != null) {
+            if (cur.v == cur.n.v) cur.n = cur.n.n;
+            else cur = cur.n;
+        }
+        return h;
+    }
+    public static void main(String[] args) {
+        N h = new N(1); h.n = new N(1); h.n.n = new N(2); h.n.n.n = new N(3); h.n.n.n.n = new N(3);
+        for (N c = dedup(h); c != null; c = c.n) System.out.print(c.v + " ");
+    }
+}
+```
+
+### Problem 11 — RevK (H)
+
+```java
+class RevK {
+    static class N { int v; N n; N(int v) { this.v = v; } }
+    static N revK(N h, int k) {
+        if (h == null) return null;
+        N prev = null, cur = h; int i = 0;
+        while (cur != null && i < k) { N nxt = cur.n; cur.n = prev; prev = cur; cur = nxt; i++; }
+        h.n = revK(cur, k);
+        return prev;
+    }
+    public static void main(String[] args) {
+        N h = new N(1); h.n = new N(2); h.n.n = new N(3); h.n.n.n = new N(4);
+        for (N c = revK(h, 2); c != null; c = c.n) System.out.print(c.v + " ");
+    }
+}
+```
+
+### Problem 12 — Merge2 (H)
+
+```java
+class Merge2 {
+    static class N { int v; N n; N(int v) { this.v = v; } }
+    static N merge(N a, N b) {
+        N d = new N(0), t = d;
+        while (a != null && b != null) { if (a.v <= b.v) { t.n = a; a = a.n; } else { t.n = b; b = b.n; } t = t.n; }
+        t.n = a == null ? b : a; return d.n;
+    }
+    public static void main(String[] args) {
+        N a = new N(1); a.n = new N(2); a.n.n = new N(4);
+        N b = new N(1); b.n = new N(3); b.n.n = new N(4);
+        for (N c = merge(a, b); c != null; c = c.n) System.out.print(c.v + " ");
+    }
+}
+```
+
+### Problem 13 — AddTwo (H)
+
+```java
+class AddTwo {
+    static class N { int v; N n; N(int v) { this.v = v; } }
+    static N add(N a, N b) {
+        N d = new N(0), t = d; int carry = 0;
+        while (a != null || b != null || carry != 0) {
+            int s = carry + (a == null ? 0 : a.v) + (b == null ? 0 : b.v);
+            t.n = new N(s % 10); t = t.n; carry = s / 10;
+            if (a != null) a = a.n; if (b != null) b = b.n;
+        }
+        return d.n;
+    }
+    public static void main(String[] args) {
+        N a = new N(2); a.n = new N(4); a.n.n = new N(3);
+        N b = new N(5); b.n = new N(6); b.n.n = new N(4);
+        for (N c = add(a, b); c != null; c = c.n) System.out.print(c.v + " ");  // 7 0 8
+    }
+}
+```
+
+### Problem 14 — SortLL (H)
+
+```java
+class SortLL {
+    static class N { int v; N n; N(int v) { this.v = v; } }
+    static N sort(N h) {
+        if (h == null || h.n == null) return h;
+        N s = h, f = h.n;
+        while (f != null && f.n != null) { s = s.n; f = f.n.n; }
+        N m = s.n; s.n = null;
+        return merge(sort(h), sort(m));
+    }
+    static N merge(N a, N b) {
+        N d = new N(0), t = d;
+        while (a != null && b != null) { if (a.v <= b.v) { t.n = a; a = a.n; } else { t.n = b; b = b.n; } t = t.n; }
+        t.n = a == null ? b : a; return d.n;
+    }
+    public static void main(String[] args) {
+        N h = new N(4); h.n = new N(2); h.n.n = new N(1); h.n.n.n = new N(3);
+        for (N c = sort(h); c != null; c = c.n) System.out.print(c.v + " ");
+    }
+}
+```
+
+### Problem 15 — Rotate (H)
+
+```java
+class Rotate {
+    static class N { int v; N n; N(int v) { this.v = v; } }
+    static N rot(N h, int k) {
+        if (h == null) return null;
+        N tail = h; int len = 1;
+        while (tail.n != null) { tail = tail.n; len++; }
+        k %= len;
+        if (k == 0) return h;
+        tail.n = h;
+        for (int i = 0; i < len - k; i++) tail = tail.n;
+        N newH = tail.n; tail.n = null;
+        return newH;
+    }
+    public static void main(String[] args) {
+        N h = new N(1); h.n = new N(2); h.n.n = new N(3); h.n.n.n = new N(4); h.n.n.n.n = new N(5);
+        for (N c = rot(h, 2); c != null; c = c.n) System.out.print(c.v + " ");
+    }
+}
+```
+

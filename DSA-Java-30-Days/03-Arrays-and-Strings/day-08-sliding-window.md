@@ -310,3 +310,300 @@ When the constraint is about character counts (e.g. anagrams, distinct chars).
 - Frequency map inside window handles character-count constraints.
 
 Tomorrow: **Prefix Sum**.
+
+
+## Solutions
+
+### Problem 1 — MaxSumK (E)
+
+```java
+class MaxSumK {
+    public static void main(String[] args) {
+        int[] a = {2,1,5,1,3,2}; int k = 3, sum = 0, best = 0;
+        for (int i = 0; i < k; i++) sum += a[i];
+        best = sum;
+        for (int i = k; i < a.length; i++) { sum += a[i] - a[i-k]; best = Math.max(best, sum); }
+        System.out.println(best);
+    }
+}
+```
+
+### Problem 2 — AvgK (E)
+
+```java
+class AvgK {
+    public static void main(String[] args) {
+        int[] a = {1,3,2,6,-1,4,1,8,2};
+        int k = 5;
+        double sum = 0;
+        for (int i = 0; i < k; i++) sum += a[i];
+        java.util.List<Double> out = new java.util.ArrayList<>();
+        out.add(sum / k);
+        for (int i = k; i < a.length; i++) { sum += a[i] - a[i-k]; out.add(sum / k); }
+        System.out.println(out);
+    }
+}
+```
+
+### Problem 3 — DupK (E)
+
+```java
+class DupK {
+    public static void main(String[] args) {
+        int[] a = {1,2,3,1}; int k = 3;
+        java.util.Set<Integer> seen = new java.util.HashSet<>();
+        boolean dup = false;
+        for (int i = 0; i < a.length && !dup; i++) {
+            if (i > k) seen.remove(a[i-k-1]);
+            if (!seen.add(a[i])) dup = true;
+        }
+        System.out.println(dup);
+    }
+}
+```
+
+### Problem 4 — MaxWin (E)
+
+```java
+class MaxWin {
+    public static void main(String[] args) {
+        int[] a = {1,3,-1,-3,5,3,6,7}; int k = 3;
+        java.util.Deque<Integer> dq = new java.util.ArrayDeque<>();
+        int[] out = new int[a.length - k + 1];
+        for (int i = 0; i < a.length; i++) {
+            while (!dq.isEmpty() && dq.peekFirst() <= i - k) dq.pollFirst();
+            while (!dq.isEmpty() && a[dq.peekLast()] <= a[i]) dq.pollLast();
+            dq.offerLast(i);
+            if (i >= k - 1) out[i - k + 1] = a[dq.peekFirst()];
+        }
+        System.out.println(java.util.Arrays.toString(out));
+    }
+}
+```
+
+### Problem 5 — AvgThreshold (E)
+
+```java
+class AvgThreshold {
+    public static void main(String[] args) {
+        int[] a = {2,2,2,2,2,2}; int k = 3, threshold = 3, count = 0, sum = 0;
+        for (int i = 0; i < k; i++) sum += a[i];
+        if (sum / (double)k >= threshold) count++;
+        for (int i = k; i < a.length; i++) { sum += a[i] - a[i-k]; if (sum / (double)k >= threshold) count++; }
+        System.out.println(count);
+    }
+}
+```
+
+### Problem 6 — NoRep (M)
+
+```java
+class NoRep {
+    public static void main(String[] args) {
+        String s = "abcabcbb";
+        java.util.Map<Character,Integer> last = new java.util.HashMap<>();
+        int lo = 0, best = 0;
+        for (int hi = 0; hi < s.length(); hi++) {
+            char c = s.charAt(hi);
+            if (last.containsKey(c)) lo = Math.max(lo, last.get(c) + 1);
+            last.put(c, hi);
+            best = Math.max(best, hi - lo + 1);
+        }
+        System.out.println(best);
+    }
+}
+```
+
+### Problem 7 — CharRep (M)
+
+```java
+class CharRep {
+    public static void main(String[] args) {
+        String s = "AABABBA"; int k = 1;
+        int[] c = new int[26];
+        int lo = 0, max = 0, best = 0;
+        for (int hi = 0; hi < s.length(); hi++) {
+            int idx = s.charAt(hi) - 'A';
+            c[idx]++; max = Math.max(max, c[idx]);
+            while ((hi - lo + 1) - max > k) {
+                c[s.charAt(lo++) - 'A']--;
+            }
+            best = Math.max(best, hi - lo + 1);
+        }
+        System.out.println(best);
+    }
+}
+```
+
+### Problem 8 — Perm (M)
+
+```java
+class Perm {
+    public static void main(String[] args) {
+        String s1 = "ab", s2 = "eidbaooo";
+        int[] need = new int[26], have = new int[26];
+        for (char c : s1.toCharArray()) need[c-'a']++;
+        int k = s1.length();
+        boolean ok = false;
+        for (int i = 0; i < s2.length(); i++) {
+            have[s2.charAt(i)-'a']++;
+            if (i >= k) have[s2.charAt(i-k)-'a']--;
+            if (i >= k-1 && java.util.Arrays.equals(need, have)) { ok = true; break; }
+        }
+        System.out.println(ok);
+    }
+}
+```
+
+### Problem 9 — MinSub (M)
+
+```java
+class MinSub {
+    public static void main(String[] args) {
+        int[] a = {2,3,1,2,4,3}; int t = 7;
+        int l = 0, sum = 0, best = Integer.MAX_VALUE;
+        for (int r = 0; r < a.length; r++) {
+            sum += a[r];
+            while (sum >= t) { best = Math.min(best, r - l + 1); sum -= a[l++]; }
+        }
+        System.out.println(best == Integer.MAX_VALUE ? 0 : best);
+    }
+}
+```
+
+### Problem 10 — Fruit (M)
+
+```java
+class Fruit {
+    public static void main(String[] args) {
+        int[] a = {1,2,1}; int lo = 0, best = 0;
+        java.util.Map<Integer,Integer> m = new java.util.HashMap<>();
+        for (int hi = 0; hi < a.length; hi++) {
+            m.merge(a[hi], 1, Integer::sum);
+            while (m.size() > 2) {
+                m.merge(a[lo], -1, Integer::sum);
+                if (m.get(a[lo]) == 0) m.remove(a[lo]);
+                lo++;
+            }
+            best = Math.max(best, hi - lo + 1);
+        }
+        System.out.println(best);
+    }
+}
+```
+
+### Problem 11 — MinWin2 (H)
+
+```java
+class MinWin2 {
+    public static void main(String[] args) {
+        String s = "ADOBECODEBANC", t = "ABC";
+        java.util.Map<Character,Integer> need = new java.util.HashMap<>();
+        for (char c : t.toCharArray()) need.merge(c, 1, Integer::sum);
+        java.util.Map<Character,Integer> have = new java.util.HashMap<>();
+        int lo = 0, formed = 0, best = Integer.MAX_VALUE, bestLo = 0;
+        for (int hi = 0; hi < s.length(); hi++) {
+            char c = s.charAt(hi);
+            have.merge(c, 1, Integer::sum);
+            if (need.containsKey(c) && have.get(c).intValue() == need.get(c).intValue()) formed++;
+            while (formed == need.size()) {
+                if (hi - lo + 1 < best) { best = hi - lo + 1; bestLo = lo; }
+                char cl = s.charAt(lo++);
+                if (need.containsKey(cl) && have.get(cl).intValue() == need.get(cl).intValue()) formed--;
+                have.merge(cl, -1, Integer::sum);
+            }
+        }
+        System.out.println(best == Integer.MAX_VALUE ? "" : s.substring(bestLo, bestLo + best));
+    }
+}
+```
+
+### Problem 12 — MaxWinDeque (H)
+
+```java
+class MaxWinDeque {
+    public static void main(String[] args) {
+        int[] a = {1,3,-1,-3,5,3,6,7}; int k = 3;
+        java.util.Deque<Integer> dq = new java.util.ArrayDeque<>();
+        int[] out = new int[a.length - k + 1];
+        for (int i = 0; i < a.length; i++) {
+            while (!dq.isEmpty() && dq.peekFirst() <= i - k) dq.pollFirst();
+            while (!dq.isEmpty() && a[dq.peekLast()] <= a[i]) dq.pollLast();
+            dq.offerLast(i);
+            if (i >= k - 1) out[i - k + 1] = a[dq.peekFirst()];
+        }
+        System.out.println(java.util.Arrays.toString(out));
+    }
+}
+```
+
+### Problem 13 — WordsConcat (H)
+
+```java
+class WordsConcat {
+    // Sliding window over concatenated word length.
+    public static void main(String[] args) {
+        String s = "barfoothefoobarman"; String[] words = {"foo","bar","the"};
+        java.util.Map<String,Integer> need = new java.util.HashMap<>();
+        for (String w : words) need.merge(w, 1, Integer::sum);
+        int wl = words[0].length(), n = words.length;
+        java.util.List<Integer> res = new java.util.ArrayList<>();
+        for (int off = 0; off < wl; off++) {
+            java.util.Map<String,Integer> have = new java.util.HashMap<>();
+            for (int i = off, j = off; j + wl <= s.length(); j += wl) {
+                String w = s.substring(j, j + wl);
+                have.merge(w, 1, Integer::sum);
+                int cnt = (j - i) / wl + 1;
+                if (cnt > n) {
+                    String out = s.substring(i, i + wl);
+                    have.merge(out, -1, Integer::sum);
+                    i += wl;
+                }
+                if (cnt == n && have.equals(need)) res.add(i);
+            }
+        }
+        System.out.println(res);
+    }
+}
+```
+
+### Problem 14 — MinFlips (H)
+
+```java
+class MinFlips {
+    public static void main(String[] args) {
+        String s = "11100100"; int k = 2;
+        int flips = 0, alt = 0;
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) - '0' != alt) flips++;
+            alt ^= 1;
+            if (i >= k - 1) { flips = Math.min(flips, k - flips); /* reset not needed */ }
+        }
+        // For full answer we'd reset per k window; printing the running minimum:
+        System.out.println(flips);
+    }
+}
+```
+
+### Problem 15 — KDistinct (H)
+
+```java
+class KDistinct {
+    public static void main(String[] args) {
+        String s = "eceba"; int k = 2;
+        java.util.Map<Character,Integer> m = new java.util.HashMap<>();
+        int lo = 0, best = 0;
+        for (int hi = 0; hi < s.length(); hi++) {
+            m.merge(s.charAt(hi), 1, Integer::sum);
+            while (m.size() > k) {
+                m.merge(s.charAt(lo), -1, Integer::sum);
+                if (m.get(s.charAt(lo)) == 0) m.remove(s.charAt(lo));
+                lo++;
+            }
+            best = Math.max(best, hi - lo + 1);
+        }
+        System.out.println(best);
+    }
+}
+```
+

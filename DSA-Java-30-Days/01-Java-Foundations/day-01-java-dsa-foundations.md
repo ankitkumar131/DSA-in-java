@@ -845,3 +845,212 @@ Compile error: `3.14` is a `double` literal, can't be assigned to `float` withou
 - `&&` short-circuits, `&` is bitwise.
 
 Tomorrow: **OOP in Java** — the foundation for every data structure we'll build from Day 13 onward.
+
+
+## Solutions
+
+### Problem 1 — SumTwo (E)
+
+```java
+class SumTwo {
+    public static void main(String[] args) {
+        java.util.Scanner sc = new java.util.Scanner(System.in);
+        int a = sc.nextInt(), b = sc.nextInt();
+        System.out.println(a + b);
+    }
+}
+```
+
+### Problem 2 — EvenOdd (E)
+
+```java
+class EvenOdd {
+    public static void main(String[] args) {
+        java.util.Scanner sc = new java.util.Scanner(System.in);
+        int n = sc.nextInt();
+        System.out.println(n % 2 == 0 ? "even" : "odd");
+    }
+}
+```
+
+### Problem 3 — MaxThree (E)
+
+```java
+class MaxThree {
+    public static void main(String[] args) {
+        java.util.Scanner sc = new java.util.Scanner(System.in);
+        int a = sc.nextInt(), b = sc.nextInt(), c = sc.nextInt();
+        System.out.println(Math.max(a, Math.max(b, c)));
+    }
+}
+```
+
+### Problem 4 — FizzBuzz (E)
+
+```java
+class FizzBuzz {
+    public static void main(String[] args) {
+        int n = 15;
+        for (int i = 1; i <= n; i++) {
+            if (i % 15 == 0) System.out.println("FizzBuzz");
+            else if (i % 3 == 0) System.out.println("Fizz");
+            else if (i % 5 == 0) System.out.println("Buzz");
+            else System.out.println(i);
+        }
+    }
+}
+```
+
+### Problem 5 — ReverseArr (E)
+
+```java
+class ReverseArr {
+    public static void main(String[] args) {
+        int[] a = {1, 2, 3, 4};
+        for (int i = a.length - 1; i >= 0; i--) System.out.print(a[i] + " ");
+    }
+}
+```
+
+### Problem 6 — CountDigits (M)
+
+```java
+class CountDigits {
+    public static void main(String[] args) {
+        int n = 12345, c = 0;
+        while (n != 0) { c++; n /= 10; }
+        System.out.println(c);
+    }
+}
+```
+
+### Problem 7 — SumN (M)
+
+```java
+class SumN {
+    public static void main(String[] args) {
+        long n = 100;
+        System.out.println(n * (n + 1) / 2);
+    }
+}
+```
+
+### Problem 8 — PowerOfTwo (M)
+
+```java
+class PowerOfTwo {
+    public static void main(String[] args) {
+        int n = 16;
+        System.out.println(n > 0 && (n & (n - 1)) == 0);
+    }
+}
+```
+
+### Problem 9 — SwapNoTemp (M)
+
+```java
+class SwapNoTemp {
+    public static void main(String[] args) {
+        int a = 3, b = 5;
+        a = a + b; b = a - b; a = a - b;
+        System.out.println(a + " " + b);
+    }
+}
+```
+
+### Problem 10 — SecondLargest (M)
+
+```java
+class SecondLargest {
+    public static void main(String[] args) {
+        int[] a = {5, 2, 8, 8, 3};
+        int first = Integer.MIN_VALUE, second = Integer.MIN_VALUE;
+        for (int x : a) {
+            if (x > first) { second = first; first = x; }
+            else if (x < first && x > second) second = x;
+        }
+        System.out.println(second);
+    }
+}
+```
+
+### Problem 11 — RotateArrK (H)
+
+```java
+class RotateArrK {
+    static void reverse(int[] a, int l, int r) {
+        while (l < r) { int t = a[l]; a[l] = a[r]; a[r] = t; l++; r--; }
+    }
+    static void rotate(int[] a, int k) {
+        k %= a.length;
+        reverse(a, 0, a.length - 1);
+        reverse(a, 0, k - 1);
+        reverse(a, k, a.length - 1);
+    }
+    public static void main(String[] args) {
+        int[] a = {1,2,3,4,5}; rotate(a, 2);
+        System.out.println(java.util.Arrays.toString(a));
+    }
+}
+```
+
+### Problem 12 — Sieve (H)
+
+```java
+class Sieve {
+    public static void main(String[] args) {
+        int n = 20;
+        boolean[] p = new boolean[n+1];
+        java.util.Arrays.fill(p, true);
+        p[0] = p[1] = false;
+        for (int i = 2; (long)i*i <= n; i++)
+            if (p[i]) for (int j = i*i; j <= n; j += i) p[j] = false;
+        for (int i = 2; i <= n; i++) if (p[i]) System.out.print(i + " ");
+    }
+}
+```
+
+### Problem 13 — ReverseInt (H)
+
+```java
+class ReverseInt {
+    public static void main(String[] args) {
+        int x = 123, r = 0;
+        while (x != 0) {
+            int d = x % 10;
+            if (r > Integer.MAX_VALUE/10 || r < Integer.MIN_VALUE/10) { r = 0; break; }
+            r = r * 10 + d; x /= 10;
+        }
+        System.out.println(r);
+    }
+}
+```
+
+### Problem 14 — CountSetBits (H)
+
+```java
+class CountSetBits {
+    public static void main(String[] args) {
+        int n = 11, c = 0;
+        while (n != 0) { c++; n &= (n - 1); }
+        System.out.println(c);
+    }
+}
+```
+
+### Problem 15 — Pascals (H)
+
+```java
+class Pascals {
+    public static void main(String[] args) {
+        int n = 5;
+        for (int i = 0; i < n; i++) {
+            int v = 1;
+            StringBuilder sb = new StringBuilder();
+            for (int j = 0; j <= i; j++) { sb.append(v).append(' '); v = v * (i - j) / (j + 1); }
+            System.out.println(sb);
+        }
+    }
+}
+```
+
