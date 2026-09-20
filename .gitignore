@@ -18,3 +18,12 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Python
+__pycache__/
+*.pyc
+
+# Editor / build outputs
+*.class
+target/
+.DS_Store
